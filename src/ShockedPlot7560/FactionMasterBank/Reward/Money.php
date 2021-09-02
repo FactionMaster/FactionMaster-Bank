@@ -50,7 +50,7 @@ class Money extends Reward implements RewardInterface {
 
     public function executeGet(string $factionName, $value = null): bool {
         if ($value !== null) $this->setValue($value);
-        BankAPI::updateMoney($factionName, $this->value, "Level up");
+        BankAPI::updateMoney($factionName, $this->value, "Reward");
         return true;
     }
 
