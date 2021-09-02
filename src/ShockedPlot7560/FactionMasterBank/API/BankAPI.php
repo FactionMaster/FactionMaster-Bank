@@ -74,9 +74,7 @@ class BankAPI {
                 'amount' => $money, 
                 'type' => $type
             ],
-            function () {
-                var_dump("ok");
-            }
+            function () { }
         ));
     }
 }
