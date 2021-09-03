@@ -32,11 +32,15 @@
 
 namespace ShockedPlot7560\FactionMasterBank\API;
 
+use PDO;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Database\Table\FactionTable;
 use ShockedPlot7560\FactionMaster\Main;
 use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
+use ShockedPlot7560\FactionMaster\Utils\Utils;
+use ShockedPlot7560\FactionMasterBank\Database\Entity\Money;
 use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
+use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
 
 class BankAPI {
 
@@ -45,36 +49,85 @@ class BankAPI {
 
     const BANK_HISTORY_QUERY = "SELECT * FROM " . BankHistoryTable::TABLE_NAME . " WHERE faction = :faction ORDER BY date DESC";
 
+    /** @var Money[] */
+    public static $money = [];
+
+    public static function init() {
+        try {
+            $query = MainAPI::$PDO->prepare("SELECT * FROM " . MoneyTable::TABLE_NAME);
+            $query->execute();
+            $query->setFetchMode(PDO::FETCH_CLASS, Money::class);
+            /** @var Money[] */
+            $result = $query->fetchAll();
+            foreach ($result as $money) {
+                self::$money[$money->faction] = $money;
+            }
+        } catch (\PDOException $Exception) {
+            return;
+        }
+    }
+
+    public static function getMoney(string $factionName): ?Money {
+        return self::$money[$factionName] ?? null;
+    }
+
     /**
      * @param int $money Can be negative to remove money
      */
     public static function updateMoney(string $factionName, int $money, string $reason = "No reason"): void {
-        $Faction = MainAPI::getFaction($factionName);
-        $Faction->money += $money;
-        Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
-            "UPDATE " . FactionTable::TABLE_NAME . " SET money = money + :money WHERE name = :name",
-            [
-                "money" => $money,
-                "name" => $factionName
-            ],
-            function () use ($Faction) {
-                MainAPI::$factions[$Faction->name] = $Faction;
+        if (($moneyInstance = self::getMoney($factionName)) instanceof Money) {
+            $moneyInstance->amount += $money;
+            Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+                "UPDATE " . MoneyTable::TABLE_NAME . " SET amount = amount + :amount WHERE faction = :faction",
+                [
+                    "amount" => $moneyInstance->amount,
+                    "faction" => $factionName
+                ],
+                function () use ($moneyInstance, $money, $reason) {
+                    BankAPI::$money[$moneyInstance->faction] = $moneyInstance;
+                    BankAPI::insertHistory($moneyInstance->faction, $money, $reason);    
+                }
+            ));
+        }
+    }
+
+    public static function insertHistory(string $factionName, int $amount, string $reason, int $type = null) {
+        if ($type === null) {
+            if ($amount < 0) {
+                $type = self::BANK_HISTORY_REMOVE_MODE;
+            }else{
+                $type = self::BANK_HISTORY_ADD_MODE;
             }
-        ));
-        if ($money < 0) {
-            $type = self::BANK_HISTORY_REMOVE_MODE;
-        }else{
-            $type = self::BANK_HISTORY_ADD_MODE;
         }
         Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
             "INSERT INTO " . BankHistoryTable::TABLE_NAME . " (faction, entity, amount, type) VALUE (:faction, :player, :amount, :type)",
             [
                 'faction' => $factionName,
                 'player' => $reason,
-                'amount' => $money, 
+                'amount' => $amount, 
                 'type' => $type
             ],
             function () { }
+        ));  
+    }
+
+    public static function initMoney(string $factionName): void {
+        Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+            "INSERT INTO " . MoneyTable::TABLE_NAME . " (faction) VALUE (:faction)",
+            [
+                "faction" => $factionName
+            ],
+            function () use ($factionName) {
+                Main::getInstance()->getServer()->getAsyncPool()->submitTask(
+                    new DatabaseTask(
+                        "SELECT * FROM " . MoneyTable::TABLE_NAME . " WHERE faction = :faction", 
+                        [ "faction" => $factionName ],
+                        function ($result) use ($factionName) {
+                            BankAPI::$money[$factionName] = $result[0] ?? null;
+                        },
+                        Money::class
+                ));
+            }
         ));
     }
 }

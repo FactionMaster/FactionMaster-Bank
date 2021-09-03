@@ -47,14 +47,17 @@ use ShockedPlot7560\FactionMaster\Permission\Permission;
 use ShockedPlot7560\FactionMaster\Reward\RewardFactory;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
+use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Button\Bank;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\HistoryBank;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\MainBank as CollectionMainBank;
 use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
+use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
 use ShockedPlot7560\FactionMasterBank\Reward\Money;
 use ShockedPlot7560\FactionMasterBank\Route\BankDeposit;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory;
 use ShockedPlot7560\FactionMasterBank\Route\MainBank;
+use ShockedPlot7560\FactionMasterBank\Task\SyncServerTask;
 
 class FactionMasterBank extends PluginBase implements Extension {
 
@@ -62,8 +65,12 @@ class FactionMasterBank extends PluginBase implements Extension {
     private $config;
     /** @var Config[] */
     private $LangConfig;
+    /** @var FactionMasterBank */
+    private static $instance;
 
     public function onLoad() {
+
+        self::$instance = $this;
 
         if (!$this->getServer()->getPluginManager()->getPlugin("EconomyAPI") instanceof Plugin) {
             $this->getLogger()->warning($this->getExtensionName() . " required EconomyAPI to use, please install them and restart your server");
@@ -73,35 +80,15 @@ class FactionMasterBank extends PluginBase implements Extension {
 
         $this->initConfigLang();
         (new BankHistoryTable(MainAPI::$PDO))->init();
-        try {
-            $defaultMoney = (int) $this->config->get("default-faction-money");
-            if (Utils::getConfig("PROVIDER") === Database::MYSQL_PROVIDER) {
-                $query = MainAPI::$PDO->prepare("SHOW COLUMNS FROM ".FactionTable::TABLE_NAME." LIKE 'money'");
-                $query->execute();    
-                if ($query->fetch() == 0) {
-                    $query = MainAPI::$PDO->prepare("ALTER TABLE ".FactionTable::TABLE_NAME." ADD `money` BIGINT NOT NULL DEFAULT '$defaultMoney' AFTER `date`;");
-                    $query->execute(); 
-                }  
-            }else{
-                $query = MainAPI::$PDO->prepare("PRAGMA table_info(" . FactionTable::TABLE_NAME . ")");
-                $query->execute();
-                $good = true;
-                foreach ($query->fetchAll() as $column) {
-                    if ($column["name"] === "money") $good = false;
-                }  
-                if ($good) {
-                    $query = MainAPI::$PDO->prepare("ALTER TABLE ".FactionTable::TABLE_NAME." ADD `money` BIGINT NOT NULL DEFAULT '$defaultMoney';");
-                    $query->execute(); 
-                }
-            }
-        } catch (PDOException $exception) {
-            $this->getLogger()->warning("An error has occurred in the initialization of " . $this->getExtensionName() . ". Automatic deactivation of the extension");
-            $this->getLogger()->debug((string) $exception->getMessage());
-            $this->getServer()->getPluginManager()->disablePlugin($this);
-            return;
-        }
+        (new MoneyTable(MainAPI::$PDO))->init();
+        BankAPI::init();
 
         Main::getInstance()->getExtensionManager()->registerExtension($this);
+        $this->getScheduler()->scheduleRepeatingTask(new SyncServerTask($this), (int) Utils::getConfig("sync-time"));
+    }
+
+    public function onEnable() {
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
 
     public function execute(): void {
@@ -168,6 +155,10 @@ class FactionMasterBank extends PluginBase implements Extension {
         });
         CollectionFactory::register(new CollectionMainBank());
         CollectionFactory::register(new HistoryBank());
+    }
+
+    public static function getInstance(): self {
+        return self::$instance;
     }
 
 }

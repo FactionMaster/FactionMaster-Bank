@@ -79,18 +79,19 @@ class BankDeposit implements Route {
             if ($data[1] !== "") {
                 $suggest = (int) $data[1];
                 if ($suggest > 0) {
-                    $Faction = MainAPI::getFactionOfPlayer($Player->getName());
+                    $factionName = MainAPI::getUser($Player->getName())->faction;
+                    $moneyInstance = BankAPI::getMoney($factionName);
                     $money = EconomyAPI::getInstance()->myMoney($Player->getName());
                     if ($money - $suggest < 0) {
                         Utils::processMenu(RouterFactory::get(self::SLUG), $Player, [Utils::getText($Player->getName(), "NO_ENOUGH_MONEY")]);
                         return;
                     }
                     if (EconomyAPI::getInstance()->reduceMoney($Player->getName(), $suggest) == EconomyAPI::RET_SUCCESS) {
-                        BankAPI::updateMoney($Faction->name, $suggest, $Player->getName());
+                        BankAPI::updateMoney($factionName, $suggest, $Player->getName());
                         Utils::newMenuSendTask(new MenuSendTask(
-                            function () use ($Faction, $suggest) {
-                                $newMoney = $Faction->money + $suggest;
-                                return (int)MainAPI::getFaction($Faction->name)->money + $suggest == $newMoney;
+                            function () use ($factionName, $moneyInstance, $suggest) {
+                                $newMoney = $moneyInstance->amount + $suggest;
+                                return BankAPI::getMoney($factionName)->amount + $suggest == $newMoney;
                             },
                             function () use ($backRoute, $Player, $data, $suggest) {
                                 Utils::processMenu($backRoute, $Player, [Utils::getText($Player->getName(), "SUCCESS_BANK_DEPOSIT", ["money" => $data[1]])]);

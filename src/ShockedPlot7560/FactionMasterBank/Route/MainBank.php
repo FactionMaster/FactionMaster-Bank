@@ -42,6 +42,7 @@ use ShockedPlot7560\FactionMaster\Route\MainPanel;
 use ShockedPlot7560\FactionMaster\Route\Route;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
+use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\MainBank as CollectionMainBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
@@ -71,10 +72,10 @@ class MainBank implements Route {
 
     public function __invoke(Player $Player, UserEntity $User, array $UserPermissions, ?array $params = null) {
         $this->UserEntity = $User;
-        $Faction = MainAPI::getFactionOfPlayer($Player->getName());
+        $moneyInstance = BankAPI::getMoney($User->faction);
         $message = "";
         if (isset($params[0])) $message = (string) $params[0];
-        $message .= (($message === "") ? "" : "\n \n") . Utils::getText($Player->getName(), "BANK_MAIN_CONTENT", ['money' => $Faction->money]);
+        $message .= (($message === "") ? "" : "\n \n") . Utils::getText($Player->getName(), "BANK_MAIN_CONTENT", ['money' => $moneyInstance->amount]);
         $this->Collection = CollectionFactory::get(CollectionMainBank::SLUG)->init($Player, $User);
         $Player->sendForm($this->menu($message));
     }
