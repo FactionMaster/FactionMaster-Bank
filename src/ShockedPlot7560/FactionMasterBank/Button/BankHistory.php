@@ -36,12 +36,12 @@ use pocketmine\Player;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Button\Button;
 use ShockedPlot7560\FactionMaster\Database\Entity\FactionEntity;
-use ShockedPlot7560\FactionMaster\Main;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\Database\Entity\BankHistory as EntityBankHistory;
 use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory as RouteBankHistory;
 
@@ -56,7 +56,7 @@ class BankHistory extends Button {
             function(Player $Player) {
                 $Faction = MainAPI::getFactionOfPlayer($Player->getName());
                 if ($Faction instanceof FactionEntity) {
-                    Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+                    FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
                         "SELECT * FROM " . BankHistoryTable::TABLE_NAME . " WHERE faction = :faction ORDER BY date DESC",
                         [
                             "faction" => $Faction->name

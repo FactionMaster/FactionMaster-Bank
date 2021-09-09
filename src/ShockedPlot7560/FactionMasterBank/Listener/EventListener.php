@@ -30,35 +30,12 @@
  *
 */
 
-namespace ShockedPlot7560\FactionMasterBank;
+namespace ShockedPlot7560\FactionMasterBank\Listener;
 
-use pocketmine\block\Chest;
-use pocketmine\block\Door;
-use pocketmine\block\FenceGate;
-use pocketmine\block\Furnace;
-use pocketmine\block\ItemFrame;
-use pocketmine\block\Trapdoor;
-use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerDeathEvent;
-use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerLoginEvent;
-use pocketmine\item\Bucket;
-use pocketmine\item\Hoe;
-use pocketmine\item\ItemIds;
-use pocketmine\item\Shovel;
-use pocketmine\level\format\Chunk;
-use pocketmine\math\Vector3;
-use pocketmine\Player;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
-use ShockedPlot7560\FactionMaster\Database\Entity\FactionEntity;
-use ShockedPlot7560\FactionMaster\Database\Entity\InvitationEntity;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
-use ShockedPlot7560\FactionMaster\Database\Table\FactionTable;
-use ShockedPlot7560\FactionMaster\Database\Table\InvitationTable;
-use ShockedPlot7560\FactionMaster\Database\Table\UserTable;
 use ShockedPlot7560\FactionMaster\Event\FactionCreateEvent;
 use ShockedPlot7560\FactionMaster\Event\FactionDeleteEvent;
 use ShockedPlot7560\FactionMaster\Main;
@@ -69,6 +46,7 @@ use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Database\Entity\Money;
 use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
 use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 
 class EventListener implements Listener {
 
@@ -115,7 +93,7 @@ class EventListener implements Listener {
                             return BankAPI::getMoney($user->faction) instanceof Money;
                         },
                         function () use ($user) {
-                            Main::getInstance()->getServer()->getAsyncPool()->submitTask(
+                            FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(
                                 new DatabaseTask(
                                     "SELECT * FROM " . MoneyTable::TABLE_NAME . " WHERE faction = :faction", 
                                     [

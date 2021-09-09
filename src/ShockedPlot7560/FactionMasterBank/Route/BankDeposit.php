@@ -42,6 +42,7 @@ use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Task\MenuSendTask;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
+use ShockedPlot7560\FactionMasterBank\Event\MoneyChangeEvent;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
 class BankDeposit implements Route {
@@ -94,6 +95,7 @@ class BankDeposit implements Route {
                                 return BankAPI::getMoney($factionName)->amount + $suggest == $newMoney;
                             },
                             function () use ($backRoute, $Player, $data, $suggest) {
+                                (new MoneyChangeEvent(MainAPI::getFactionOfPlayer($Player->getName()), (int) $data[1]))->call();
                                 Utils::processMenu($backRoute, $Player, [Utils::getText($Player->getName(), "SUCCESS_BANK_DEPOSIT", ["money" => $data[1]])]);
                             },
                             function () use ($Player) {

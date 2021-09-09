@@ -34,13 +34,11 @@ namespace ShockedPlot7560\FactionMasterBank\API;
 
 use PDO;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
-use ShockedPlot7560\FactionMaster\Database\Table\FactionTable;
-use ShockedPlot7560\FactionMaster\Main;
 use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
-use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\Database\Entity\Money;
 use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
 use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 
 class BankAPI {
 
@@ -77,8 +75,8 @@ class BankAPI {
     public static function updateMoney(string $factionName, int $money, string $reason = "No reason"): void {
         if (($moneyInstance = self::getMoney($factionName)) instanceof Money) {
             $moneyInstance->amount += $money;
-            Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
-                "UPDATE " . MoneyTable::TABLE_NAME . " SET amount = amount + :amount WHERE faction = :faction",
+            FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+                "UPDATE " . MoneyTable::TABLE_NAME . " SET amount = :amount WHERE faction = :faction",
                 [
                     "amount" => $moneyInstance->amount,
                     "faction" => $factionName
@@ -99,8 +97,8 @@ class BankAPI {
                 $type = self::BANK_HISTORY_ADD_MODE;
             }
         }
-        Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
-            "INSERT INTO " . BankHistoryTable::TABLE_NAME . " (faction, entity, amount, type) VALUE (:faction, :player, :amount, :type)",
+        FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+            "INSERT INTO " . BankHistoryTable::TABLE_NAME . " (faction, entity, amount, type) VALUES (:faction, :player, :amount, :type)",
             [
                 'faction' => $factionName,
                 'player' => $reason,
@@ -112,13 +110,13 @@ class BankAPI {
     }
 
     public static function initMoney(string $factionName): void {
-        Main::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
-            "INSERT INTO " . MoneyTable::TABLE_NAME . " (faction) VALUE (:faction)",
+        FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+            "INSERT INTO " . MoneyTable::TABLE_NAME . " (faction) VALUES (:faction)",
             [
                 "faction" => $factionName
             ],
             function () use ($factionName) {
-                Main::getInstance()->getServer()->getAsyncPool()->submitTask(
+                FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(
                     new DatabaseTask(
                         "SELECT * FROM " . MoneyTable::TABLE_NAME . " WHERE faction = :faction", 
                         [ "faction" => $factionName ],

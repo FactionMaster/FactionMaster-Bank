@@ -32,15 +32,12 @@
 
 namespace ShockedPlot7560\FactionMasterBank;
 
-use PDOException;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Button\Collection\CollectionFactory;
 use ShockedPlot7560\FactionMaster\Button\Collection\MainCollectionFac;
-use ShockedPlot7560\FactionMaster\Database\Database;
-use ShockedPlot7560\FactionMaster\Database\Table\FactionTable;
 use ShockedPlot7560\FactionMaster\Extension\Extension;
 use ShockedPlot7560\FactionMaster\Main;
 use ShockedPlot7560\FactionMaster\Permission\Permission;
@@ -53,6 +50,8 @@ use ShockedPlot7560\FactionMasterBank\Button\Collection\HistoryBank;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\MainBank as CollectionMainBank;
 use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
 use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
+use ShockedPlot7560\FactionMasterBank\Listener\EventListener;
+use ShockedPlot7560\FactionMasterBank\Listener\ScoreHudListener;
 use ShockedPlot7560\FactionMasterBank\Reward\Money;
 use ShockedPlot7560\FactionMasterBank\Route\BankDeposit;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory;
@@ -89,6 +88,10 @@ class FactionMasterBank extends PluginBase implements Extension {
 
     public function onEnable() {
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
+
+        if ($this->getServer()->getPluginManager()->getPlugin("ScoreHud") instanceof Plugin) {
+            $this->getServer()->getPluginManager()->registerEvents(new ScoreHudListener($this), $this);
+        }
     }
 
     public function execute(): void {
@@ -151,7 +154,7 @@ class FactionMasterBank extends PluginBase implements Extension {
     private function registerCollection(): void {
         $ButtonCollection = CollectionFactory::get(MainCollectionFac::SLUG);
         $ButtonCollection->registerCallable("FactionMasterBank", function() use ($ButtonCollection) {
-            $ButtonCollection->register(new Bank(), 1, true);
+            $ButtonCollection->register(new Bank(), 0);
         });
         CollectionFactory::register(new CollectionMainBank());
         CollectionFactory::register(new HistoryBank());
