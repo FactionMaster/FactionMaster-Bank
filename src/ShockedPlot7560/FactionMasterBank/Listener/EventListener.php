@@ -50,7 +50,7 @@ use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 
 class EventListener implements Listener {
 
-    /** @var Main */
+    /** @var FactionMasterBank */
     private $Main;
 
     public function __construct(FactionMasterBank $Main) {
