@@ -58,13 +58,13 @@ class Money extends Reward implements RewardInterface {
     public function executeCost(string $factionName, $value = null) {
         if ($value !== null) $this->setValue($value);
         $Faction = MainAPI::getFaction($factionName);
-        if ($Faction instanceof FactionEntity && ($Faction->money - $this->getValue()) < 0) {
+        if ($Faction instanceof FactionEntity) {
             $money = BankAPI::getMoney($Faction->name);
-            if ($money instanceof EntityMoney && ($money->value - $this->getValue()) < 0) {
+            if ($money instanceof EntityMoney && ($money->amount - $this->getValue()) < 0) {
                 return "NO_ENOUGH_MONEY";
             }
         }
-        BankAPI::updateMoney($factionName, $this->value * -1, "Level");
+        BankAPI::updateMoney($factionName, $this->getValue() * -1, "Level");
         return true;
     }
 
