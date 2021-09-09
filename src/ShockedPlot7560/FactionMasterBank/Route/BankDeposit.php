@@ -94,7 +94,7 @@ class BankDeposit implements Route {
                                 $newMoney = $moneyInstance->amount + $suggest;
                                 return BankAPI::getMoney($factionName)->amount + $suggest == $newMoney;
                             },
-                            function () use ($backRoute, $Player, $data, $suggest) {
+                            function () use ($backRoute, $Player, $data) {
                                 (new MoneyChangeEvent(MainAPI::getFactionOfPlayer($Player->getName()), (int) $data[1]))->call();
                                 Utils::processMenu($backRoute, $Player, [Utils::getText($Player->getName(), "SUCCESS_BANK_DEPOSIT", ["money" => $data[1]])]);
                             },

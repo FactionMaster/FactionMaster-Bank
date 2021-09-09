@@ -51,7 +51,7 @@ use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 
 class ScoreHudListener implements Listener {
 
-    /** @var Main */
+    /** @var FactionMasterBank */
     private $Main;
 
     public function __construct(FactionMasterBank $Main) {
@@ -125,12 +125,6 @@ class ScoreHudListener implements Listener {
             $ev = new PlayerTagUpdateEvent($player, new ScoreTag(
                 "factionmaster.faction.money",
                 $money->amount
-            ));
-            $ev->call();
-        }else{
-            $ev = new PlayerTagUpdateEvent($player, new ScoreTag(
-                "factionmaster.faction.money",
-                0
             ));
             $ev->call();
         }

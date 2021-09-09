@@ -72,7 +72,7 @@ class EventListener implements Listener {
         FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
             "DELETE FROM " . BankHistoryTable::TABLE_NAME . " WHERE faction = :faction",
             ["faction" => $event->getFaction()->name],
-            function () use ($event) { }
+            function () { }
         ));
     }
 
@@ -99,7 +99,7 @@ class EventListener implements Listener {
                                     [
                                         "faction" => $user->faction
                                     ],
-                                    function ($result) use ($user) {
+                                    function ($result) {
                                         $money = $result[0];
                                         BankAPI::$money[$money->faction] = $money;
                                     },

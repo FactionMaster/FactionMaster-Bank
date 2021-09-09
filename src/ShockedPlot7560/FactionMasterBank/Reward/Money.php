@@ -37,6 +37,7 @@ use ShockedPlot7560\FactionMaster\Database\Entity\FactionEntity;
 use ShockedPlot7560\FactionMaster\Reward\Reward;
 use ShockedPlot7560\FactionMaster\Reward\RewardInterface;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
+use ShockedPlot7560\FactionMasterBank\Database\Entity\Money as EntityMoney;
 
 class Money extends Reward implements RewardInterface {
 
@@ -58,7 +59,10 @@ class Money extends Reward implements RewardInterface {
         if ($value !== null) $this->setValue($value);
         $Faction = MainAPI::getFaction($factionName);
         if ($Faction instanceof FactionEntity && ($Faction->money - $this->getValue()) < 0) {
-            return "NO_ENOUGH_MONEY";
+            $money = BankAPI::getMoney($Faction->name);
+            if ($money instanceof EntityMoney && ($money->value - $this->getValue()) < 0) {
+                return "NO_ENOUGH_MONEY";
+            }
         }
         BankAPI::updateMoney($factionName, $this->value * -1, "Level");
         return true;

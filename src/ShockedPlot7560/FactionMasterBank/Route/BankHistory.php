@@ -34,6 +34,7 @@ namespace ShockedPlot7560\FactionMasterBank\Route;
 
 use jojoe77777\FormAPI\SimpleForm;
 use pocketmine\Player;
+use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
 use ShockedPlot7560\FactionMaster\Button\Collection\CollectionFactory;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
 use ShockedPlot7560\FactionMaster\Route\Route;
@@ -55,6 +56,8 @@ class BankHistory implements Route {
     private $backMenu;
     /** @var UserEntity */
     private $UserEntity;
+    /** @var Collection */
+    private $Collection;
 
     public function getSlug(): string {
         return self::SLUG;
