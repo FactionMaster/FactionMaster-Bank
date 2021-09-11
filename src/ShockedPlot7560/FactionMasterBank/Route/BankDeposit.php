@@ -32,7 +32,7 @@
 
 namespace ShockedPlot7560\FactionMasterBank\Route;
 
-use jojoe77777\FormAPI\CustomForm;
+use ShockedPlot7560\FactionMaster\libs\jojoe77777\FormAPI\CustomForm;
 use onebone\economyapi\EconomyAPI;
 use pocketmine\Player;
 use ShockedPlot7560\FactionMaster\API\MainAPI;

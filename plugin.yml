@@ -5,5 +5,4 @@ api: 3.17.7
 main: ShockedPlot7560\FactionMasterBank\FactionMasterBank
 depend: [EconomyAPI, FactionMaster]
 softdepend: ["ScoreHud"]
-virions: ["libFormAPI"]
 description: "Extension which implements a bank system"
