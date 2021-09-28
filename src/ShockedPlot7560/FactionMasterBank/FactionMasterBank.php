@@ -139,11 +139,13 @@ class FactionMasterBank extends PluginBase implements Extension {
         $this->saveResource('en_EN.yml');
         $this->saveResource('config.yml');
         $this->config = new Config($this->getDataFolder() . "config.yml");
+        ConfigUpdater::checkUpdate($this, $this->config, "file-version", 1);
+        ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML), "file-version", 1);
+        ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "en_EN.yml", Config::YAML), "file-version", 1);
         $this->langConfig = [
             "fr_FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
             "en_EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML)
         ];
-        ConfigUpdater::checkUpdate($this, $this->config, "file-version", 1);
     }
 
     private function registerPermission(): void {
