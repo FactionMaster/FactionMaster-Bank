@@ -41,8 +41,12 @@ use ShockedPlot7560\FactionMaster\Button\Collection\MainCollectionFac;
 use ShockedPlot7560\FactionMaster\Button\Collection\MainFacCollection;
 use ShockedPlot7560\FactionMaster\Extension\Extension;
 use ShockedPlot7560\FactionMaster\Extension\ExtensionManager;
+use ShockedPlot7560\FactionMaster\libs\JackMD\ConfigUpdater\ConfigUpdater;
+use ShockedPlot7560\FactionMaster\libs\JackMD\UpdateNotifier\UpdateNotifier;
 use ShockedPlot7560\FactionMaster\Main;
+use ShockedPlot7560\FactionMaster\Manager\ConfigManager;
 use ShockedPlot7560\FactionMaster\Manager\ExtensionManager as ManagerExtensionManager;
+use ShockedPlot7560\FactionMaster\Manager\MigrationManager;
 use ShockedPlot7560\FactionMaster\Manager\PermissionManager as ManagerPermissionManager;
 use ShockedPlot7560\FactionMaster\Permission\Permission;
 use ShockedPlot7560\FactionMaster\Permission\PermissionManager;
@@ -88,6 +92,13 @@ class FactionMasterBank extends PluginBase implements Extension {
         BankAPI::init();
 
         ManagerExtensionManager::registerExtension($this);
+        MigrationManager::addConfigDbToCheck([
+            "CONFIG_INST" => new Config($this->getDataFolder() . "config.yml", Config::YAML),
+            "CONFIG_NAME" => "default-faction-money",
+            "TABLE_NAME" => MoneyTable::TABLE_NAME,
+            "COLUMN_NAME" => "amount",
+            "TABLE_CLASS" => MoneyTable::class
+        ]);
         $this->getScheduler()->scheduleRepeatingTask(new SyncServerTask($this), (int) Utils::getConfig("sync-time"));
     }
 
@@ -97,6 +108,7 @@ class FactionMasterBank extends PluginBase implements Extension {
         if ($this->getServer()->getPluginManager()->getPlugin("ScoreHud") instanceof Plugin) {
             $this->getServer()->getPluginManager()->registerEvents(new ScoreHudListener($this), $this);
         }
+        UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
     }
 
     public function execute(): void {
@@ -131,6 +143,7 @@ class FactionMasterBank extends PluginBase implements Extension {
             "fr_FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
             "en_EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML)
         ];
+        ConfigUpdater::checkUpdate($this, $this->config, "file-version", 1);
     }
 
     private function registerPermission(): void {
