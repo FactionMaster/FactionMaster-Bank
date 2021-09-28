@@ -41,19 +41,19 @@ use ShockedPlot7560\FactionMasterBank\Route\BankDeposit as RouteBankDeposit;
 
 class BankDeposit extends Button {
 
+    const SLUG = "bankDeposit";
+
     public function __construct() {
-        parent::__construct(
-            "bankDeposit", 
-            function(string $playerName) {
+        $this->setSlug(self::SLUG)
+            ->setContent(function(string $playerName) {
                 return Utils::getText($playerName, "BUTTON_DEPOSIT_BANK");
-            },  
-            function(Player $Player) {
-                Utils::processMenu(RouterFactory::get(RouteBankDeposit::SLUG), $Player);
-            },
-            [
+            })
+            ->setCallable(function(Player $player) {
+                Utils::processMenu(RouterFactory::get(RouteBankDeposit::SLUG), $player);
+            })
+            ->setPermissions([
                 PermissionIdsBank::PERMISSION_BANK_DEPOSIT
-            ]
-        );
+            ]);
     }
 
 }

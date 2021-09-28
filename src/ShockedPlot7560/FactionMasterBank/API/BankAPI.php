@@ -58,7 +58,7 @@ class BankAPI {
             /** @var Money[] */
             $result = $query->fetchAll();
             foreach ($result as $money) {
-                self::$money[$money->faction] = $money;
+                self::$money[$money->getFactionName()] = $money;
             }
         } catch (\PDOException $Exception) {
             return;
@@ -74,16 +74,16 @@ class BankAPI {
      */
     public static function updateMoney(string $factionName, int $money, string $reason = "No reason"): void {
         if (($moneyInstance = self::getMoney($factionName)) instanceof Money) {
-            $moneyInstance->amount += $money;
+            $moneyInstance->addAmount($money);
             FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
                 "UPDATE " . MoneyTable::TABLE_NAME . " SET amount = :amount WHERE faction = :faction",
                 [
-                    "amount" => $moneyInstance->amount,
+                    "amount" => $moneyInstance->getAmount(),
                     "faction" => $factionName
                 ],
                 function () use ($moneyInstance, $money, $reason) {
-                    BankAPI::$money[$moneyInstance->faction] = $moneyInstance;
-                    BankAPI::insertHistory($moneyInstance->faction, $money, $reason);    
+                    BankAPI::$money[$moneyInstance->getFactionName()] = $moneyInstance;
+                    BankAPI::insertHistory($moneyInstance->getFactionName(), $money, $reason);    
                 }
             ));
         }

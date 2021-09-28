@@ -38,6 +38,7 @@ use pocketmine\Player;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
 use ShockedPlot7560\FactionMaster\Route\Route;
+use ShockedPlot7560\FactionMaster\Route\RouteBase;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Task\MenuSendTask;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
@@ -45,78 +46,74 @@ use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Event\MoneyChangeEvent;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
-class BankDeposit implements Route {
+class BankDeposit extends RouteBase implements Route {
 
     const SLUG = "bankDeposit";
-
-    public $PermissionNeed = [
-        PermissionIdsBank::PERMISSION_BANK_DEPOSIT
-    ];
-
-    /** @var Route */
-    private $backMenu;
-    /** @var UserEntity */
-    private $UserEntity;
 
     public function getSlug(): string {
         return self::SLUG;
     }
 
-    public function __construct() {
-        $this->backMenu = RouterFactory::get(MainBank::SLUG);
+    public function getBackRoute(): ?Route {
+        return RouterFactory::get(MainBank::SLUG);
     }
 
-    public function __invoke(Player $player, UserEntity $User, array $UserPermissions, ?array $params = null) {
-        $this->UserEntity = $User;
+    public function getPermissions(): array {
+        return [
+            PermissionIdsBank::PERMISSION_BANK_DEPOSIT
+        ];
+    }
+
+    public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
+        $this->init($player, $userEntity, $userPermissions, $params);
         $message = "";
         if (isset($params[0]) && \is_string($params[0])) $message = $params[0];
-        $player->sendForm($this->bankDeposit($message));;
+        $player->sendForm($this->getForm($message));;
     }
 
     public function call() : callable{
-        $backRoute = $this->backMenu;
-        return function (Player $Player, $data) use ($backRoute) {
+        return function (Player $player, $data) {
             if ($data === null) return;
             if ($data[1] !== "") {
                 $suggest = (int) $data[1];
                 if ($suggest > 0) {
-                    $factionName = MainAPI::getUser($Player->getName())->faction;
+                    $factionName = MainAPI::getUser($player->getName())->faction;
                     $moneyInstance = BankAPI::getMoney($factionName);
-                    $money = EconomyAPI::getInstance()->myMoney($Player->getName());
+                    $money = EconomyAPI::getInstance()->myMoney($player->getName());
                     if ($money - $suggest < 0) {
-                        Utils::processMenu(RouterFactory::get(self::SLUG), $Player, [Utils::getText($Player->getName(), "NO_ENOUGH_MONEY")]);
+                        Utils::processMenu(RouterFactory::get(self::SLUG), $player, [Utils::getText($player->getName(), "NO_ENOUGH_MONEY")]);
                         return;
                     }
-                    if (EconomyAPI::getInstance()->reduceMoney($Player->getName(), $suggest) == EconomyAPI::RET_SUCCESS) {
-                        BankAPI::updateMoney($factionName, $suggest, $Player->getName());
+                    if (EconomyAPI::getInstance()->reduceMoney($player->getName(), $suggest) == EconomyAPI::RET_SUCCESS) {
+                        BankAPI::updateMoney($factionName, $suggest, $player->getName());
                         Utils::newMenuSendTask(new MenuSendTask(
                             function () use ($factionName, $moneyInstance, $suggest) {
-                                $newMoney = $moneyInstance->amount + $suggest;
-                                return BankAPI::getMoney($factionName)->amount + $suggest == $newMoney;
+                                $newMoney = $moneyInstance->getAmount() + $suggest;
+                                return BankAPI::getMoney($factionName)->getAmount() + $suggest == $newMoney;
                             },
-                            function () use ($backRoute, $Player, $data) {
-                                (new MoneyChangeEvent(MainAPI::getFactionOfPlayer($Player->getName()), (int) $data[1]))->call();
-                                Utils::processMenu($backRoute, $Player, [Utils::getText($Player->getName(), "SUCCESS_BANK_DEPOSIT", ["money" => $data[1]])]);
+                            function () use ($player, $data) {
+                                (new MoneyChangeEvent(MainAPI::getFactionOfPlayer($player->getName()), (int) $data[1]))->call();
+                                Utils::processMenu($this->getBackRoute(), $player, [Utils::getText($player->getName(), "SUCCESS_BANK_DEPOSIT", ["money" => $data[1]])]);
                             },
-                            function () use ($Player) {
-                                Utils::processMenu(RouterFactory::get(self::SLUG), $Player, [Utils::getText($Player->getName(), "ERROR")]);
+                            function () use ($player) {
+                                Utils::processMenu(RouterFactory::get(self::SLUG), $player, [Utils::getText($player->getName(), "ERROR")]);
                             }
                         ));                    
                     }
                 }else{
-                    Utils::processMenu(RouterFactory::get(self::SLUG), $Player, [Utils::getText($Player->getName(), "VALID_FORMAT")]);
+                    Utils::processMenu(RouterFactory::get(self::SLUG), $player, [Utils::getText($player->getName(), "VALID_FORMAT")]);
                 }
             }else{
-                Utils::processMenu($backRoute, $Player);
+                Utils::processMenu($this->getBackRoute(), $player);
             }
         };
     }
 
-    private function bankDeposit(string $message = "") : CustomForm {
+    private function getForm(string $message = "") : CustomForm {
         $menu = new CustomForm($this->call());
-        $menu->setTitle(Utils::getText($this->UserEntity->name, "BANK_DEPOSIT_TITLE"));
+        $menu->setTitle(Utils::getText($this->getUserEntity()->getName(), "BANK_DEPOSIT_TITLE"));
         $menu->addLabel($message);
-        $menu->addInput(Utils::getText($this->UserEntity->name, "BANK_DEPOSIT_INPUT"));
+        $menu->addInput(Utils::getText($this->getUserEntity()->getName(), "BANK_DEPOSIT_INPUT"));
         return $menu;
     }
 }

@@ -36,9 +36,10 @@ use pocketmine\Player;
 use ShockedPlot7560\FactionMaster\Button\Back;
 use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
-use ShockedPlot7560\FactionMaster\Route\MainPanel;
+use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMasterBank\Button\BankDeposit;
 use ShockedPlot7560\FactionMasterBank\Button\BankHistory;
+use ShockedPlot7560\FactionMasterBank\Route\MainBank as RouteMainBank;
 
 class MainBank extends Collection {
 
@@ -50,7 +51,7 @@ class MainBank extends Collection {
         $this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
             $this->register(new BankDeposit());
             $this->register(new BankHistory());
-            $this->register(new Back(MainPanel::SLUG));
+            $this->register(new Back(RouterFactory::get(RouteMainBank::SLUG)->getBackRoute()));
         });
     }
 }

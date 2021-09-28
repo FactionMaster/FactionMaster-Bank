@@ -33,8 +33,8 @@
 namespace ShockedPlot7560\FactionMasterBank\Database\Table;
 
 use PDO;
-use ShockedPlot7560\FactionMaster\Database\Database;
 use ShockedPlot7560\FactionMaster\Database\Table\TableInterface;
+use ShockedPlot7560\FactionMaster\Manager\DatabaseManager;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 
 class BankHistoryTable implements TableInterface {
@@ -46,7 +46,7 @@ class BankHistoryTable implements TableInterface {
     const SLUG = "bank_history";
 
     public function init(): self {
-        $auto_increment = Utils::getConfig("PROVIDER") === Database::MYSQL_PROVIDER ? "AUTO_INCREMENT" : "AUTOINCREMENT";
+        $auto_increment = Utils::getConfig("PROVIDER") === DatabaseManager::MYSQL_PROVIDER ? "AUTO_INCREMENT" : "AUTOINCREMENT";
         $this->PDO->query("CREATE TABLE IF NOT EXISTS `". self::TABLE_NAME ."` ( 
             `id` INTEGER NOT NULL PRIMARY KEY $auto_increment, 
             `faction` VARCHAR(255) NOT NULL , 

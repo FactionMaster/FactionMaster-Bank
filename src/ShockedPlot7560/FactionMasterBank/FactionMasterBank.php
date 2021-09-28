@@ -38,9 +38,14 @@ use pocketmine\utils\Config;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Button\Collection\CollectionFactory;
 use ShockedPlot7560\FactionMaster\Button\Collection\MainCollectionFac;
+use ShockedPlot7560\FactionMaster\Button\Collection\MainFacCollection;
 use ShockedPlot7560\FactionMaster\Extension\Extension;
+use ShockedPlot7560\FactionMaster\Extension\ExtensionManager;
 use ShockedPlot7560\FactionMaster\Main;
+use ShockedPlot7560\FactionMaster\Manager\ExtensionManager as ManagerExtensionManager;
+use ShockedPlot7560\FactionMaster\Manager\PermissionManager as ManagerPermissionManager;
 use ShockedPlot7560\FactionMaster\Permission\Permission;
+use ShockedPlot7560\FactionMaster\Permission\PermissionManager;
 use ShockedPlot7560\FactionMaster\Reward\RewardFactory;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
@@ -63,7 +68,7 @@ class FactionMasterBank extends PluginBase implements Extension {
     /** @var Config */
     private $config;
     /** @var Config[] */
-    private $LangConfig;
+    private $langConfig;
     /** @var FactionMasterBank */
     private static $instance;
 
@@ -82,7 +87,7 @@ class FactionMasterBank extends PluginBase implements Extension {
         (new MoneyTable(MainAPI::$PDO))->init();
         BankAPI::init();
 
-        Main::getInstance()->getExtensionManager()->registerExtension($this);
+        ManagerExtensionManager::registerExtension($this);
         $this->getScheduler()->scheduleRepeatingTask(new SyncServerTask($this), (int) Utils::getConfig("sync-time"));
     }
 
@@ -107,8 +112,8 @@ class FactionMasterBank extends PluginBase implements Extension {
     }
 
     /** @return Config[] */
-    public function getLangConfig(): array {
-        return $this->LangConfig;
+    public function getlangConfig(): array {
+        return $this->langConfig;
     }
 
     public function getConfigBank(): Config {
@@ -122,19 +127,18 @@ class FactionMasterBank extends PluginBase implements Extension {
         $this->saveResource('en_EN.yml');
         $this->saveResource('config.yml');
         $this->config = new Config($this->getDataFolder() . "config.yml");
-        $this->LangConfig = [
+        $this->langConfig = [
             "fr_FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
             "en_EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML)
         ];
     }
 
     private function registerPermission(): void {
-        $permissionManager = Main::getInstance()->getPermissionManager();
-        $permissionManager->registerPermission(new Permission(
+        ManagerPermissionManager::registerPermission(new Permission(
             "PERMISSION_BANK_DEPOSIT", 
             function(string $playerName) { return Utils::getText($playerName, "PERMISSION_BANK_DEPOSIT");}, 
-            PermissionIdsBank::PERMISSION_BANK_DEPOSIT))
-        ->registerPermission(new Permission(
+            PermissionIdsBank::PERMISSION_BANK_DEPOSIT));
+        ManagerPermissionManager::registerPermission(new Permission(
             "PERMISSION_SEE_BANK_HISTORY", 
             function(string $playerName) { return Utils::getText($playerName, "PERMISSION_SEE_BANK_HISTORY");}, 
             PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY));
@@ -152,7 +156,7 @@ class FactionMasterBank extends PluginBase implements Extension {
     }
 
     private function registerCollection(): void {
-        $ButtonCollection = CollectionFactory::get(MainCollectionFac::SLUG);
+        $ButtonCollection = CollectionFactory::get(MainFacCollection::SLUG);
         $ButtonCollection->registerCallable("FactionMasterBank", function() use ($ButtonCollection) {
             $ButtonCollection->register(new Bank(), 0);
         });

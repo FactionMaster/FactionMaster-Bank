@@ -36,17 +36,17 @@ use pocketmine\Player;
 use ShockedPlot7560\FactionMaster\Button\Back;
 use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
-use ShockedPlot7560\FactionMasterBank\Route\MainBank;
+use ShockedPlot7560\FactionMaster\Route\RouterFactory;
+use ShockedPlot7560\FactionMasterBank\Route\BankHistory;
 
 class HistoryBank extends Collection {
 
     const SLUG = "HistoryBank";
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct(self::SLUG);
         $this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
-            $this->register(new Back(MainBank::SLUG));
+            $this->register(new Back(RouterFactory::get(BankHistory::SLUG)->getBackRoute()));
         });
     }
 }

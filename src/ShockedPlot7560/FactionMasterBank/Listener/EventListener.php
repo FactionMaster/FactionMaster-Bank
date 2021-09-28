@@ -58,20 +58,20 @@ class EventListener implements Listener {
     }
 
     public function onFaction(FactionCreateEvent $event) {
-        BankAPI::initMoney($event->getFaction());
+        BankAPI::initMoney($event->getFaction()->getName());
     }
 
     public function onFactionDelete(FactionDeleteEvent $event) {
         FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
             "DELETE FROM " . MoneyTable::TABLE_NAME . " WHERE faction = :faction",
-            ["faction" => $event->getFaction()->name],
+            ["faction" => $event->getFaction()->getName()],
             function () use ($event) {
-                unset(BankAPI::$money[$event->getFaction()->name]);
+                unset(BankAPI::$money[$event->getFaction()->getName()]);
             }
         ));
         FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
             "DELETE FROM " . BankHistoryTable::TABLE_NAME . " WHERE faction = :faction",
-            ["faction" => $event->getFaction()->name],
+            ["faction" => $event->getFaction()->getName()],
             function () { }
         ));
     }
@@ -85,23 +85,24 @@ class EventListener implements Listener {
             function () use ($playerName, $event) {
                 $user = MainAPI::getUser($playerName);
                 if ($user->faction !== null) {
-                    if (!BankAPI::getMoney($user->faction) instanceof Money) {
-                        BankAPI::initMoney($user->faction);
+                    if (!BankAPI::getMoney($user->getFactionName()) instanceof Money) {
+                        BankAPI::initMoney($user->getFactionName());
                     }
                     Utils::newMenuSendTask(new MenuSendTask(
                         function () use ($user) {
-                            return BankAPI::getMoney($user->faction) instanceof Money;
+                            return BankAPI::getMoney($user->getFactionName()) instanceof Money;
                         },
                         function () use ($user) {
                             FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(
                                 new DatabaseTask(
                                     "SELECT * FROM " . MoneyTable::TABLE_NAME . " WHERE faction = :faction", 
                                     [
-                                        "faction" => $user->faction
+                                        "faction" => $user->getFactionName()
                                     ],
                                     function ($result) {
+                                        /** @var Money */
                                         $money = $result[0];
-                                        BankAPI::$money[$money->faction] = $money;
+                                        BankAPI::$money[$money->getFactionName()] = $money;
                                     },
                                     Money::class
                             ));   

@@ -35,64 +35,53 @@ namespace ShockedPlot7560\FactionMasterBank\Route;
 use ShockedPlot7560\FactionMaster\libs\jojoe77777\FormAPI\SimpleForm;
 
 use pocketmine\Player;
-use ShockedPlot7560\FactionMaster\API\MainAPI;
-use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
 use ShockedPlot7560\FactionMaster\Button\Collection\CollectionFactory;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
-use ShockedPlot7560\FactionMaster\Route\MainPanel;
+use ShockedPlot7560\FactionMaster\Route\MainRoute;
 use ShockedPlot7560\FactionMaster\Route\Route;
+use ShockedPlot7560\FactionMaster\Route\RouteBase;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\MainBank as CollectionMainBank;
-use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
-class MainBank implements Route {
+class MainBank extends RouteBase implements Route {
 
     const SLUG = "mainBank";
-
-    public $PermissionNeed = [
-        PermissionIdsBank::PERMISSION_BANK_DEPOSIT, 
-        PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY
-    ];
-    
-    /** @var Route */
-    private $back;
-    /** @var UserEntity */
-    private $UserEntity;
-    /** @var Collection */
-    private $Collection;
 
     public function getSlug(): string {
         return self::SLUG;
     }
 
-    public function __construct() {
-        $this->back = RouterFactory::get(MainPanel::SLUG);
+    public function getBackRoute(): ?Route {
+        return RouterFactory::get(MainRoute::SLUG);
     }
 
-    public function __invoke(Player $Player, UserEntity $User, array $UserPermissions, ?array $params = null) {
-        $this->UserEntity = $User;
-        $moneyInstance = BankAPI::getMoney($User->faction);
+    public function getPermissions(): array {
+        return [ ];
+    }
+
+    public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
+        $this->init($player, $userEntity, $userPermissions, $params);
+        $moneyInstance = BankAPI::getMoney($this->getUserEntity()->getFactionName());
         $message = "";
         if (isset($params[0])) $message = (string) $params[0];
-        $message .= (($message === "") ? "" : "\n \n") . Utils::getText($Player->getName(), "BANK_MAIN_CONTENT", ['money' => $moneyInstance->amount]);
-        $this->Collection = CollectionFactory::get(CollectionMainBank::SLUG)->init($Player, $User);
-        $Player->sendForm($this->menu($message));
+        $message .= (($message === "") ? "" : "\n \n") . Utils::getText($player->getName(), "BANK_MAIN_CONTENT", ['money' => $moneyInstance->getAmount()]);
+        $this->setCollection(CollectionFactory::get(CollectionMainBank::SLUG)->init($this->getPlayer(), $this->getUserEntity()));
+        $player->sendForm($this->getForm($message));
     }
 
     public function call(): callable {
-        $Collection = $this->Collection;
-        return function (Player $player, $data) use ($Collection) {
+        return function (Player $player, $data) {
             if ($data === null) return;
-            $Collection->process($data, $player);
+            $this->getCollection()->process($data, $player);
         };
     }
 
-    private function menu(string $message = ""): SimpleForm {
+    private function getForm(string $message = ""): SimpleForm {
         $menu = new SimpleForm($this->call());
-        $menu = $this->Collection->generateButtons($menu, $this->UserEntity->name);
-        $menu->setTitle(Utils::getText($this->UserEntity->name, "BANK_MAIN_PANEL_TITLE"));
+        $menu = $this->getCollection()->generateButtons($menu, $this->getUserEntity()->getName());
+        $menu->setTitle(Utils::getText($this->getUserEntity()->getName(), "BANK_MAIN_PANEL_TITLE"));
         if ($message !== "") $menu->setContent($message);
         return $menu;
     }

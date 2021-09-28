@@ -38,66 +38,65 @@ use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
 use ShockedPlot7560\FactionMaster\Button\Collection\CollectionFactory;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
 use ShockedPlot7560\FactionMaster\Route\Route;
+use ShockedPlot7560\FactionMaster\Route\RouteBase;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\HistoryBank;
+use ShockedPlot7560\FactionMasterBank\Database\Entity\BankHistory as EntityBankHistory;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
-class BankHistory implements Route {
+class BankHistory extends RouteBase implements Route {
 
     const SLUG = "bankHistory";
-
-    public $PermissionNeed = [
-        PermissionIdsBank::PERMISSION_BANK_DEPOSIT
-    ];
-
-    /** @var Route */
-    private $backMenu;
-    /** @var UserEntity */
-    private $UserEntity;
-    /** @var Collection */
-    private $Collection;
 
     public function getSlug(): string {
         return self::SLUG;
     }
 
-    public function __construct() {
-        $this->backMenu = RouterFactory::get(MainBank::SLUG);
+    public function getBackRoute(): ?Route {
+        return RouterFactory::get(MainBank::SLUG);
     }
 
-    public function __invoke(Player $Player, UserEntity $User, array $UserPermissions, ?array $params = null) {
-        $this->UserEntity = $User;
-        $content = Utils::getText($User->name, "BANK_HISTORY_CONTENT");
+    public function getPermissions(): array {
+        return [
+            PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY
+        ];
+    }
+
+    public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
+        $this->init($player, $userEntity, $userPermissions, $params);
+
+        $content = Utils::getText($this->getUserEntity()->getName(), "BANK_HISTORY_CONTENT");
         if (isset($params[0])) {
-            foreach ($params[0] as $history) {
-                if($history->type == BankAPI::BANK_HISTORY_ADD_MODE) {
-                    $content .= "\n§r §7> §2+".$history->amount." §o§7: ".$history->entity;
-                }else if($history->type == BankAPI::BANK_HISTORY_REMOVE_MODE) {
-                    $content .= "\n§r §7> §4-".$history->amount." §o§7: ".$history->entity;
+            /** @var EntityBankHistory[] */
+            $histories = $params[0];
+            foreach ($histories as $history) {
+                if($history->getType() == BankAPI::BANK_HISTORY_ADD_MODE) {
+                    $content .= "\n§r §7> §2+".$history->getAmount()." §o§7: ".$history->getEntityString();
+                }else if($history->getType() == BankAPI::BANK_HISTORY_REMOVE_MODE) {
+                    $content .= "\n§r §7> §4-".$history->getAmount()." §o§7: ".$history->getEntityString();
                 }
             } 
             if (count($params[0]) == 0) {
-                $content .= Utils::getText($User->name, "NO_TRANSACTION");
+                $content .= Utils::getText($this->getUserEntity()->getName(), "NO_TRANSACTION");
             }       
         }
-        $this->Collection = CollectionFactory::get(HistoryBank::SLUG)->init($Player, $User);
-        $Player->sendForm($this->bankHistory($content));;
+        $this->setCollection(CollectionFactory::get(HistoryBank::SLUG)->init($this->getPlayer(), $this->getUserEntity()));
+        $player->sendForm($this->getForm($content));;
     }
 
     public function call() : callable{
-        $backRoute = $this->backMenu;
-        return function (Player $Player, $data) use ($backRoute) {
+        return function (Player $player, $data) {
             if ($data === null) return;
-            Utils::processMenu($backRoute, $Player);
+            Utils::processMenu($this->getBackRoute(), $player);
         };
     }
 
-    private function bankHistory(string $message = ""): SimpleForm {
+    private function getForm(string $message = ""): SimpleForm {
         $menu = new SimpleForm($this->call());
-        $menu = $this->Collection->generateButtons($menu, $this->UserEntity->name);
-        $menu->setTitle(Utils::getText($this->UserEntity->name, "BANK_HISTORY_TITLE"));
+        $menu = $this->getCollection()->generateButtons($menu, $this->getUserEntity()->getName());
+        $menu->setTitle(Utils::getText($this->getUserEntity()->getName(), "BANK_HISTORY_TITLE"));
         $menu->setContent($message);
         return $menu;
     }

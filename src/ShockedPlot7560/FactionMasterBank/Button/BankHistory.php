@@ -47,31 +47,31 @@ use ShockedPlot7560\FactionMasterBank\Route\BankHistory as RouteBankHistory;
 
 class BankHistory extends Button {
 
+    const SLUG = "bankHistory";
+
     public function __construct() {
-        parent::__construct(
-            "BankHistory", 
-            function(string $playerName) {
+        $this->setSlug(self::SLUG)
+            ->setContent(function(string $playerName) {
                 return Utils::getText($playerName, "BUTTON_HISTORY_BANK");
-            },  
-            function(Player $Player) {
-                $Faction = MainAPI::getFactionOfPlayer($Player->getName());
-                if ($Faction instanceof FactionEntity) {
+            })
+            ->setCallable(function(Player $player) {
+                $faction = MainAPI::getFactionOfPlayer($player->getName());
+                if ($faction instanceof FactionEntity) {
                     FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
                         "SELECT * FROM " . BankHistoryTable::TABLE_NAME . " WHERE faction = :faction ORDER BY date DESC",
                         [
-                            "faction" => $Faction->name
+                            "faction" => $faction->name
                         ],
-                        function (array $result) use ($Player) {
-                            Utils::processMenu(RouterFactory::get(RouteBankHistory::SLUG), $Player, [$result]);
+                        function (array $result) use ($player) {
+                            Utils::processMenu(RouterFactory::get(RouteBankHistory::SLUG), $player, [$result]);
                         },
                         EntityBankHistory::class
                     ));
                 }
-            },
-            [
+            })
+            ->setPermissions([
                 PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY
-            ]
-        );
+            ]);
     }
 
 }

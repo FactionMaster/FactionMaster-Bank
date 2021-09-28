@@ -34,19 +34,16 @@ namespace ShockedPlot7560\FactionMasterBank\Event;
 
 use pocketmine\event\Event;
 use ShockedPlot7560\FactionMaster\Database\Entity\FactionEntity;
+use ShockedPlot7560\FactionMaster\Event\FactionEvent;
+use ShockedPlot7560\FactionMaster\Event\Forcable;
 
-class MoneyChangeEvent extends Event {
+class MoneyChangeEvent extends FactionEvent implements Forcable{
 
-    private $faction;
     private $money;
 
-    public function __construct(FactionEntity $faction, int $money) {
-        $this->faction = $faction;
+    public function __construct(FactionEntity $faction, int $money, bool $isForce = false) {
+        parent::__construct($faction, $isForce);
         $this->money = $money;
-    }
-
-    public function getFaction(): FactionEntity {
-        return $this->faction;
     }
 
     public function getMoney(): int {

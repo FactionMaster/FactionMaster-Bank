@@ -32,7 +32,12 @@
 
 namespace ShockedPlot7560\FactionMasterBank\Database\Entity;
 
-class BankHistory {
+use ShockedPlot7560\FactionMaster\Database\Entity\EntityDatabase;
+use ShockedPlot7560\FactionMaster\Database\Entity\FactionUtils;
+
+class BankHistory extends EntityDatabase {
+
+    use FactionUtils;
 
     /** @var int */
     public $id;
@@ -47,4 +52,19 @@ class BankHistory {
     /** @var int */
     public $date;
 
+    public function getEntityString(): string {
+        return $this->entity;
+    }
+
+    public function getAmount(): int {
+        return $this->amount;
+    }
+
+    public function getType(): string {
+        return $this->type;
+    }
+
+    public function getTimestamp(): int {
+        return $this->date;
+    }
 }

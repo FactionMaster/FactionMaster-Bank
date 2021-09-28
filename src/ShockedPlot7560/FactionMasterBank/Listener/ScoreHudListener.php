@@ -65,9 +65,9 @@ class ScoreHudListener implements Listener {
             case "factionmaster.faction.money":
                 $faction = MainAPI::getFactionOfPlayer($player->getName());
                 if ($faction instanceof FactionEntity) {
-                    $money = BankAPI::getMoney($faction->name);
+                    $money = BankAPI::getMoney($faction->getName());
                     if (!$money instanceof Money) return;
-                    $tag->setValue($money->amount ?? 0);
+                    $tag->setValue($money->getAmount() ?? 0);
                 }else{
                     $tag->setValue(0);
                 }
@@ -78,14 +78,14 @@ class ScoreHudListener implements Listener {
     public function onMoney(MoneyChangeEvent $event): void {
         $faction = $event->getFaction();
         $server = $this->Main->getServer();
-        $money = BankAPI::getMoney($faction->name);
+        $money = BankAPI::getMoney($faction->getName());
         if (!$money instanceof Money) return;
-        foreach ($faction->members as $name => $rank) {
+        foreach ($faction->getMembers() as $name => $rank) {
             $player = $server->getPlayer($name);
             if ($player instanceof Player) {  
                 $ev = new PlayerTagUpdateEvent($player, new ScoreTag(
                     "factionmaster.faction.money",
-                    $money->amount
+                    $money->getAmount()
                 ));
                 $ev->call();          
             }
@@ -94,13 +94,13 @@ class ScoreHudListener implements Listener {
 
     public function onFactionCreate(FactionCreateEvent $event): void {
         $player = $event->getPlayer();
-        $Faction = MainAPI::getFaction($event->getFaction());
-        if ($Faction instanceof FactionEntity) {
-            $money = BankAPI::getMoney($Faction->name);
+        $faction = $event->getFaction();
+        if ($faction instanceof FactionEntity) {
+            $money = BankAPI::getMoney($faction->name);
             if (!$money instanceof Money) return;
             $ev = new PlayerTagUpdateEvent($player, new ScoreTag(
                 "factionmaster.faction.money",
-                $money->amount
+                $money->getAmount()
             ));
             $ev->call();
         }else{
@@ -113,18 +113,18 @@ class ScoreHudListener implements Listener {
     }
 
     public function onFactionJoin(FactionJoinEvent $event): void {
-        $player = $event->getPlayer();
+        $player = $event->getTarget();
         if (!$player instanceof Player) {
             $player =  $this->Main->getServer()->getPlayer($player);
         }
         if (!$player instanceof Player) return;
-        $Faction = $event->getFaction();
-        if ($Faction instanceof FactionEntity) {
-            $money = BankAPI::getMoney($Faction->name);
+        $faction = $event->getFaction();
+        if ($faction instanceof FactionEntity) {
+            $money = BankAPI::getMoney($faction->getName());
             if (!$money instanceof Money) return;
             $ev = new PlayerTagUpdateEvent($player, new ScoreTag(
                 "factionmaster.faction.money",
-                $money->amount
+                $money->getAmount()
             ));
             $ev->call();
         }
@@ -133,14 +133,14 @@ class ScoreHudListener implements Listener {
     public function onLevelChange(FactionLevelChangeEvent $event): void {
         $faction = $event->getFaction();
         $server = $this->Main->getServer();
-        $money = BankAPI::getMoney($faction->name);
+        $money = BankAPI::getMoney($faction->getName());
         if (!$money instanceof Money) return;
-        foreach ($faction->members as $name => $rank) {
+        foreach ($faction->getMembers() as $name => $rank) {
             $player = $server->getPlayer($name);
             if ($player instanceof Player) {  
                 $ev = new PlayerTagUpdateEvent($player, new ScoreTag(
                     "factionmaster.faction.money",
-                    $money->amount
+                    $money->getAmount()
                 ));
                 $ev->call();          
             }
@@ -148,7 +148,7 @@ class ScoreHudListener implements Listener {
     }
 
     public function onFactionLeave(FactionLeaveEvent $event): void {
-        $player = $event->getPlayer();
+        $player = $event->getTarget();
         $ev = new PlayerTagUpdateEvent($player, new ScoreTag(
             "factionmaster.faction.money",
             0

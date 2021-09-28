@@ -32,7 +32,12 @@
 
 namespace ShockedPlot7560\FactionMasterBank\Database\Entity;
 
-class Money {
+use ShockedPlot7560\FactionMaster\Database\Entity\EntityDatabase;
+use ShockedPlot7560\FactionMaster\Database\Entity\FactionUtils;
+
+class Money extends EntityDatabase {
+
+    use FactionUtils;
 
     /** @var int */
     public $id;
@@ -41,4 +46,15 @@ class Money {
     /** @var int */
     public $amount;
 
+    public function getAmount(): int {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount): void {
+        $this->amount = $amount;
+    }
+
+    public function addAmount(int $amount): void {
+        $this->amount += $amount;
+    }
 }
