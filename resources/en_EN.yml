@@ -4,16 +4,22 @@ file-version: 1
 
 BANK_MAIN_PANEL_TITLE: "Faction bank"
 BANK_DEPOSIT_TITLE: "Deposit money"
+BANK_WITHDRAW_TITLE: "Withdraw money"
 BANK_DEPOSIT_INPUT: "Enter the amount you wish to add to the faction bank, enter a blank field to go back"
+BANK_WITHDRAW_INPUT: "Enter the amount you wish to remove the amount to the faction bank, enter a blank field to go back"
 BANK_MAIN_CONTENT: "§7Solde current: §6{{money}}§7$"
 SUCCESS_BANK_DEPOSIT: " §a>> §2You have successfully deposited {{money}}$!"
+SUCCESS_BANK_WITHDRAW: " §a>> §2You have successfully withdraw {{money}}$!"
 NO_ENOUGH_MONEY: " §c>> §4You don't have enough money"
+NO_ENOUGH_MONEY_FACTION: " §c>> §4The faction have not enough money"
 NO_TRANSACTION: " §c>> §4No transactions have been made at this time"
 
 BUTTON_DEPOSIT_BANK: "Deposit money"
+BUTTON_WITHDRAW_BANK: "Withdraw money"
 BUTTON_BANK: "Faction bank"
 BUTTON_HISTORY_BANK: "Transaction history"
 
+PERMISSION_BANK_WITHDRAW: "Withdraw money in the faction bank"
 PERMISSION_BANK_DEPOSIT: "Depositing money in the faction bank"
 PERMISSION_SEE_BANK_HISTORY: "View the transaction history of the faction bank"
 

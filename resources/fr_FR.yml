@@ -4,16 +4,22 @@ file-version: 1
 
 BANK_MAIN_PANEL_TITLE: "Banque de faction"
 BANK_DEPOSIT_TITLE: "Déposer de l'argent"
+BANK_WITHDRAW_TITLE: "Retirer de l'argent"
 BANK_DEPOSIT_INPUT: "Entrer le montant que vous souhaiter ajouter à la banque de faction, entrer un champ vide pour revenir en arrière"
+BANK_WITHDRAW_INPUT: "Entrer le montant que vous souhaiter retirer de la banque de faction, entrer un champ vide pour revenir en arrière"
 BANK_MAIN_CONTENT: "§7Solde actuel: §6{{money}}§7$"
 SUCCESS_BANK_DEPOSIT: " §a>> §2Vous avez déposé {{money}}$ avec succès !"
+SUCCESS_BANK_WITHDRAW: " §a>> §2Vous avez retiré {{money}}$ avec succès !"
 NO_ENOUGH_MONEY: " §c>> §4Vous n'avez pas assez d'argent"
+NO_ENOUGH_MONEY_FACTION: " §c>> §4La faction n'a pas assez d'argent"
 NO_TRANSACTION: " §c>> §4Aucune transaction n'a été effectué pour le moment"
 
 BUTTON_DEPOSIT_BANK: "Déposer de l'argent"
+BUTTON_WITHDRAW_BANK: "Retirer de l'argent"
 BUTTON_BANK: "Banque de faction"
 BUTTON_HISTORY_BANK: "Historique des transactions"
 
+PERMISSION_BANK_WITHDRAW: "Retirer de l'argent dans la banque de faction"
 PERMISSION_BANK_DEPOSIT: "Déposer de l'argent dans la banque de faction"
 PERMISSION_SEE_BANK_HISTORY: "Voir l'historique des transactions de la banque de faction"
 

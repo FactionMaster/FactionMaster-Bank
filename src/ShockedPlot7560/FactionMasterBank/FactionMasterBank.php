@@ -64,6 +64,7 @@ use ShockedPlot7560\FactionMasterBank\Listener\ScoreHudListener;
 use ShockedPlot7560\FactionMasterBank\Reward\Money;
 use ShockedPlot7560\FactionMasterBank\Route\BankDeposit;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory;
+use ShockedPlot7560\FactionMasterBank\Route\BankWithdraw;
 use ShockedPlot7560\FactionMasterBank\Route\MainBank;
 use ShockedPlot7560\FactionMasterBank\Task\SyncServerTask;
 
@@ -152,18 +153,23 @@ class FactionMasterBank extends PluginBase implements Extension {
         ManagerPermissionManager::registerPermission(new Permission(
             "PERMISSION_BANK_DEPOSIT", 
             function(string $playerName) { return Utils::getText($playerName, "PERMISSION_BANK_DEPOSIT");}, 
-            PermissionIdsBank::PERMISSION_BANK_DEPOSIT));
+            PermissionIdsBank::PERMISSION_BANK_DEPOSIT), true);
         ManagerPermissionManager::registerPermission(new Permission(
             "PERMISSION_SEE_BANK_HISTORY", 
             function(string $playerName) { return Utils::getText($playerName, "PERMISSION_SEE_BANK_HISTORY");}, 
-            PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY));
+            PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY), true);
+        ManagerPermissionManager::registerPermission(new Permission(
+            "PERMISSION_BANK_WITHDRAW", 
+            function(string $playerName) { return Utils::getText($playerName, "PERMISSION_BANK_WITHDRAW");}, 
+            PermissionIdsBank::PERMISSION_BANK_WITHDRAW), true);
     }
 
     private function registerRoute(): void {
         $routes = [
             MainBank::class,
             BankDeposit::class,
-            BankHistory::class
+            BankHistory::class,
+            BankWithdraw::class
         ];
         foreach ($routes as $route) {
             RouterFactory::registerRoute(new $route());

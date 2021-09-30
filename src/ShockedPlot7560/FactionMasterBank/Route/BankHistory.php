@@ -73,9 +73,9 @@ class BankHistory extends RouteBase implements Route {
             $histories = $params[0];
             foreach ($histories as $history) {
                 if($history->getType() == BankAPI::BANK_HISTORY_ADD_MODE) {
-                    $content .= "\n§r §7> §2+".$history->getAmount()." §o§7: ".$history->getEntityString();
+                    $content .= "\n§r §7> §2+".abs($history->getAmount())." §o§7: ".$history->getEntityString();
                 }else if($history->getType() == BankAPI::BANK_HISTORY_REMOVE_MODE) {
-                    $content .= "\n§r §7> §4-".$history->getAmount()." §o§7: ".$history->getEntityString();
+                    $content .= "\n§r §7> §4-".abs($history->getAmount())." §o§7: ".$history->getEntityString();
                 }
             } 
             if (count($params[0]) == 0) {

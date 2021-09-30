@@ -36,5 +36,6 @@ interface PermissionIdsBank {
 
     public const PERMISSION_BANK_DEPOSIT = 200;
     public const PERMISSION_SEE_BANK_HISTORY = 201;
+    public const PERMISSION_BANK_WITHDRAW = 202;
 
 }

@@ -30,30 +30,30 @@
  *
 */
 
-namespace ShockedPlot7560\FactionMasterBank\Button\Collection;
+namespace ShockedPlot7560\FactionMasterBank\Button;
 
 use pocketmine\Player;
-use ShockedPlot7560\FactionMaster\Button\Back;
-use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
-use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
+use ShockedPlot7560\FactionMaster\Button\Button;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
-use ShockedPlot7560\FactionMasterBank\Button\BankDeposit;
-use ShockedPlot7560\FactionMasterBank\Button\BankHistory;
-use ShockedPlot7560\FactionMasterBank\Button\BankWithdraw;
-use ShockedPlot7560\FactionMasterBank\Route\MainBank as RouteMainBank;
+use ShockedPlot7560\FactionMaster\Utils\Utils;
+use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
+use ShockedPlot7560\FactionMasterBank\Route\BankWithdraw as RouteBankWithdraw;
 
-class MainBank extends Collection {
+class BankWithdraw extends Button {
 
-    const SLUG = "mainBank";
+    const SLUG = "bankWithdraw";
 
-    public function __construct()
-    {
-        parent::__construct(self::SLUG);
-        $this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
-            $this->register(new BankDeposit());
-            $this->register(new BankWithdraw());
-            $this->register(new BankHistory());
-            $this->register(new Back(RouterFactory::get(RouteMainBank::SLUG)->getBackRoute()));
-        });
+    public function __construct() {
+        $this->setSlug(self::SLUG)
+            ->setContent(function(string $playerName) {
+                return Utils::getText($playerName, "BUTTON_WITHDRAW_BANK");
+            })
+            ->setCallable(function(Player $player) {
+                Utils::processMenu(RouterFactory::get(RouteBankWithdraw::SLUG), $player);
+            })
+            ->setPermissions([
+                PermissionIdsBank::PERMISSION_BANK_WITHDRAW
+            ]);
     }
+
 }
