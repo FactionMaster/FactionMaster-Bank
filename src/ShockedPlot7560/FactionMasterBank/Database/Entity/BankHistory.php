@@ -60,7 +60,7 @@ class BankHistory extends EntityDatabase {
         return $this->amount;
     }
 
-    public function getType(): string {
+    public function getType(): int {
         return $this->type;
     }
 
