@@ -44,6 +44,7 @@ use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\HistoryBank;
 use ShockedPlot7560\FactionMasterBank\Database\Entity\BankHistory as EntityBankHistory;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
 class BankHistory extends RouteBase implements Route {
@@ -66,6 +67,8 @@ class BankHistory extends RouteBase implements Route {
 
     public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
         $this->init($player, $userEntity, $userPermissions, $params);
+        if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") != true) 
+            return Utils::processMenu($this->getBackRoute(), $this->getPlayer()); 
 
         $content = Utils::getText($this->getUserEntity()->getName(), "BANK_HISTORY_CONTENT");
         if (isset($params[0])) {

@@ -150,27 +150,39 @@ class FactionMasterBank extends PluginBase implements Extension {
     }
 
     private function registerPermission(): void {
-        ManagerPermissionManager::registerPermission(new Permission(
-            "PERMISSION_BANK_DEPOSIT", 
-            function(string $playerName) { return Utils::getText($playerName, "PERMISSION_BANK_DEPOSIT");}, 
-            PermissionIdsBank::PERMISSION_BANK_DEPOSIT), true);
-        ManagerPermissionManager::registerPermission(new Permission(
-            "PERMISSION_SEE_BANK_HISTORY", 
-            function(string $playerName) { return Utils::getText($playerName, "PERMISSION_SEE_BANK_HISTORY");}, 
-            PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY), true);
-        ManagerPermissionManager::registerPermission(new Permission(
-            "PERMISSION_BANK_WITHDRAW", 
-            function(string $playerName) { return Utils::getText($playerName, "PERMISSION_BANK_WITHDRAW");}, 
-            PermissionIdsBank::PERMISSION_BANK_WITHDRAW), true);
+        if ($this->config->get("bank-deposit") == true) {
+            ManagerPermissionManager::registerPermission(new Permission(
+                "PERMISSION_BANK_DEPOSIT", 
+                function(string $playerName) { return Utils::getText($playerName, "PERMISSION_BANK_DEPOSIT");}, 
+                PermissionIdsBank::PERMISSION_BANK_DEPOSIT), true);
+        }
+        if ($this->config->get("bank-withdraw") == true) {
+            ManagerPermissionManager::registerPermission(new Permission(
+                "PERMISSION_BANK_WITHDRAW", 
+                function(string $playerName) { return Utils::getText($playerName, "PERMISSION_BANK_WITHDRAW");}, 
+                PermissionIdsBank::PERMISSION_BANK_WITHDRAW), true);
+        }
+        if ($this->config->get("bank-history") == true) {
+            ManagerPermissionManager::registerPermission(new Permission(
+                "PERMISSION_SEE_BANK_HISTORY", 
+                function(string $playerName) { return Utils::getText($playerName, "PERMISSION_SEE_BANK_HISTORY");}, 
+                PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY), true);
+        }
     }
 
     private function registerRoute(): void {
         $routes = [
-            MainBank::class,
-            BankDeposit::class,
-            BankHistory::class,
-            BankWithdraw::class
+            MainBank::class
         ];
+        if ($this->config->get("bank-deposit") == true) {
+            $routes[] = BankDeposit::class;
+        }
+        if ($this->config->get("bank-history") == true) {
+            $routes[] = BankHistory::class;
+        }
+        if ($this->config->get("bank-withdraw") == true) {
+            $routes[] = BankWithdraw::class;
+        }
         foreach ($routes as $route) {
             RouterFactory::registerRoute(new $route());
         }

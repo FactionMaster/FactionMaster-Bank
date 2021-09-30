@@ -44,6 +44,7 @@ use ShockedPlot7560\FactionMaster\Task\MenuSendTask;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Event\MoneyChangeEvent;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
 class BankDeposit extends RouteBase implements Route {
@@ -66,6 +67,8 @@ class BankDeposit extends RouteBase implements Route {
 
     public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
         $this->init($player, $userEntity, $userPermissions, $params);
+        if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") != true) 
+            return Utils::processMenu($this->getBackRoute(), $this->getPlayer()); 
         $message = "";
         if (isset($params[0]) && \is_string($params[0])) $message = $params[0];
         $player->sendForm($this->getForm($message));;

@@ -40,6 +40,7 @@ use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMasterBank\Button\BankDeposit;
 use ShockedPlot7560\FactionMasterBank\Button\BankHistory;
 use ShockedPlot7560\FactionMasterBank\Button\BankWithdraw;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\Route\MainBank as RouteMainBank;
 
 class MainBank extends Collection {
@@ -50,9 +51,12 @@ class MainBank extends Collection {
     {
         parent::__construct(self::SLUG);
         $this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
-            $this->register(new BankDeposit());
-            $this->register(new BankWithdraw());
-            $this->register(new BankHistory());
+            if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") == true) 
+                $this->register(new BankDeposit());
+            if (FactionMasterBank::getInstance()->getConfig()->get("bank-withdraw") == true) 
+                $this->register(new BankWithdraw());
+            if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") == true) 
+                $this->register(new BankHistory());
             $this->register(new Back(RouterFactory::get(RouteMainBank::SLUG)->getBackRoute()));
         });
     }
