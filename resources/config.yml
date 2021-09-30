@@ -31,6 +31,10 @@ file-version: 1
  
 default-faction-money: 0
 
+# These values correspond to the display of the buttons / menus. 
+# The processes of the plugin, such as the recording in the transaction logs, will not stop
+# Set to true to display the button / panel
+# Set to false to hidde
 bank-withdraw: false
 bank-deposit: true
 bank-history: true
