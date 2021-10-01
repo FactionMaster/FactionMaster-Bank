@@ -115,7 +115,7 @@ class ScoreHudListener implements Listener {
     public function onFactionJoin(FactionJoinEvent $event): void {
         $player = $event->getTarget();
         if (!$player instanceof Player) {
-            $player =  $this->Main->getServer()->getPlayer($player);
+            $player =  $this->Main->getServer()->getPlayer($player->getName());
         }
         if (!$player instanceof Player) return;
         $faction = $event->getFaction();
