@@ -1,6 +1,6 @@
 name: FactionMasterBank
 author: ShockedPlot7560
-version: 1.4.0
+version: 1.4.1
 api: 3.17.7
 main: ShockedPlot7560\FactionMasterBank\FactionMasterBank
 depend: [EconomyAPI, FactionMaster]
