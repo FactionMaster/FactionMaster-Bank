@@ -100,7 +100,6 @@ class FactionMasterBank extends PluginBase implements Extension {
             "COLUMN_NAME" => "amount",
             "TABLE_CLASS" => MoneyTable::class
         ]);
-        $this->getScheduler()->scheduleRepeatingTask(new SyncServerTask($this), (int) Utils::getConfig("sync-time"));
     }
 
     public function onEnable() {
@@ -110,6 +109,7 @@ class FactionMasterBank extends PluginBase implements Extension {
             $this->getServer()->getPluginManager()->registerEvents(new ScoreHudListener($this), $this);
         }
         UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
+        $this->getScheduler()->scheduleRepeatingTask(new SyncServerTask($this), (int) Utils::getConfig("sync-time"));
     }
 
     public function execute(): void {
