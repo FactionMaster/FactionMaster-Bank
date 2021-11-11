@@ -67,8 +67,10 @@ class BankHistory extends RouteBase implements Route {
 
     public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
         $this->init($player, $userEntity, $userPermissions, $params);
-        if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") != true) 
-            return Utils::processMenu($this->getBackRoute(), $this->getPlayer()); 
+        if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") != true) { 
+            Utils::processMenu($this->getBackRoute(), $this->getPlayer()); 
+            return;
+        }
 
         $content = Utils::getText($this->getUserEntity()->getName(), "BANK_HISTORY_CONTENT");
         if (isset($params[0])) {

@@ -67,8 +67,10 @@ class BankDeposit extends RouteBase implements Route {
 
     public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
         $this->init($player, $userEntity, $userPermissions, $params);
-        if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") != true) 
-            return Utils::processMenu($this->getBackRoute(), $this->getPlayer()); 
+        if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") != true) { 
+            Utils::processMenu($this->getBackRoute(), $this->getPlayer()); 
+            return;
+        }
         $message = "";
         if (isset($params[0]) && \is_string($params[0])) $message = $params[0];
         $player->sendForm($this->getForm($message));;
