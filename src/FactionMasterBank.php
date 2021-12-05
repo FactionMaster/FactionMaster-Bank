@@ -41,7 +41,9 @@ use ShockedPlot7560\FactionMaster\Button\Collection\MainFacCollection;
 use ShockedPlot7560\FactionMaster\Extension\Extension;
 use ShockedPlot7560\FactionMaster\libs\JackMD\ConfigUpdater\ConfigUpdater;
 use ShockedPlot7560\FactionMaster\libs\JackMD\UpdateNotifier\UpdateNotifier;
+use ShockedPlot7560\FactionMaster\Main;
 use ShockedPlot7560\FactionMaster\Manager\ExtensionManager as ManagerExtensionManager;
+use ShockedPlot7560\FactionMaster\Manager\LeaderboardManager;
 use ShockedPlot7560\FactionMaster\Manager\MigrationManager;
 use ShockedPlot7560\FactionMaster\Manager\PermissionManager as ManagerPermissionManager;
 use ShockedPlot7560\FactionMaster\Permission\Permission;
@@ -54,6 +56,7 @@ use ShockedPlot7560\FactionMasterBank\Button\Collection\HistoryBank;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\MainBank as CollectionMainBank;
 use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
 use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
+use ShockedPlot7560\FactionMasterBank\Leaderboard\FactionMoneyLeaderboard;
 use ShockedPlot7560\FactionMasterBank\Listener\EventListener;
 use ShockedPlot7560\FactionMasterBank\Listener\ScoreHudListener;
 use ShockedPlot7560\FactionMasterBank\Reward\Money;
@@ -105,6 +108,7 @@ class FactionMasterBank extends PluginBase implements Extension {
         }
         UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
         $this->getScheduler()->scheduleRepeatingTask(new SyncServerTask($this), (int) Utils::getConfig("sync-time"));
+        LeaderboardManager::registerLeaderboard(new FactionMoneyLeaderboard(Main::getInstance()));
     }
 
     public function execute(): void {
