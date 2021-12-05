@@ -77,7 +77,7 @@ class FactionMasterBank extends PluginBase implements Extension {
     /** @var FactionMasterBank */
     private static $instance;
 
-    public function onLoad() {
+    public function onLoad(): void {
 
         self::$instance = $this;
 
@@ -102,7 +102,7 @@ class FactionMasterBank extends PluginBase implements Extension {
         ]);
     }
 
-    public function onEnable() {
+    public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 
         if ($this->getServer()->getPluginManager()->getPlugin("ScoreHud") instanceof Plugin) {
@@ -146,9 +146,9 @@ class FactionMasterBank extends PluginBase implements Extension {
         ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "en_EN.yml", Config::YAML), "file-version", 1);
         ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML), "file-version", 1);
         $this->langConfig = [
-            "fr_FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
-            "en_EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML),
-            "tr_TR" => new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML)
+            "FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
+            "EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML),
+            "TR" => new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML)
         ];
     }
 
