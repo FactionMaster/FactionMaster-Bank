@@ -30,30 +30,35 @@
  *
 */
 
-namespace ShockedPlot7560\FactionMasterBank\Button;
+namespace ShockedPlot7560\FactionMasterBank\Task;
 
-use pocketmine\Player;
-use ShockedPlot7560\FactionMaster\Button\Button;
-use ShockedPlot7560\FactionMaster\Route\RouterFactory;
-use ShockedPlot7560\FactionMaster\Utils\Utils;
-use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
-use ShockedPlot7560\FactionMasterBank\Route\BankWithdraw as RouteBankWithdraw;
+use pocketmine\scheduler\Task;
+use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
+use ShockedPlot7560\FactionMasterBank\API\BankAPI;
+use ShockedPlot7560\FactionMasterBank\Database\Entity\Money;
+use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 
-class BankWithdraw extends Button {
+class SyncServerTask extends Task {
 
-    const SLUG = "bankWithdraw";
+    private $main;
 
-    public function __construct() {
-        $this->setSlug(self::SLUG)
-            ->setContent(function(string $playerName) {
-                return Utils::getText($playerName, "BUTTON_WITHDRAW_BANK");
-            })
-            ->setCallable(function(Player $player) {
-                Utils::processMenu(RouterFactory::get(RouteBankWithdraw::SLUG), $player);
-            })
-            ->setPermissions([
-                PermissionIdsBank::PERMISSION_BANK_WITHDRAW
-            ]);
+    public function __construct(FactionMasterBank $main) {
+       $this->main = $main; 
     }
 
+    public function onRun(): void {
+
+        FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+            "SELECT * FROM " . MoneyTable::TABLE_NAME,
+            [],
+            function (array $result) {
+                if (count($result) > 0) BankAPI::$money = [];
+                foreach ($result as $money) {
+                    if ($money instanceof Money) BankAPI::$money[$money->faction] = $money;
+                }
+            },
+            Money::class
+        ));
+    }
 }

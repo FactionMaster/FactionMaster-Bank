@@ -32,27 +32,45 @@
 
 namespace ShockedPlot7560\FactionMasterBank\Button;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
+use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Button\Button;
+use ShockedPlot7560\FactionMaster\Database\Entity\FactionEntity;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
+use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
+use ShockedPlot7560\FactionMasterBank\Database\Entity\BankHistory as EntityBankHistory;
+use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
-use ShockedPlot7560\FactionMasterBank\Route\BankDeposit as RouteBankDeposit;
+use ShockedPlot7560\FactionMasterBank\Route\BankHistory as RouteBankHistory;
 
-class BankDeposit extends Button {
+class BankHistory extends Button {
 
-    const SLUG = "bankDeposit";
+    const SLUG = "bankHistory";
 
     public function __construct() {
         $this->setSlug(self::SLUG)
             ->setContent(function(string $playerName) {
-                return Utils::getText($playerName, "BUTTON_DEPOSIT_BANK");
+                return Utils::getText($playerName, "BUTTON_HISTORY_BANK");
             })
             ->setCallable(function(Player $player) {
-                Utils::processMenu(RouterFactory::get(RouteBankDeposit::SLUG), $player);
+                $faction = MainAPI::getFactionOfPlayer($player->getName());
+                if ($faction instanceof FactionEntity) {
+                    FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+                        "SELECT * FROM " . BankHistoryTable::TABLE_NAME . " WHERE faction = :faction ORDER BY date DESC",
+                        [
+                            "faction" => $faction->name
+                        ],
+                        function (array $result) use ($player) {
+                            Utils::processMenu(RouterFactory::get(RouteBankHistory::SLUG), $player, [$result]);
+                        },
+                        EntityBankHistory::class
+                    ));
+                }
             })
             ->setPermissions([
-                PermissionIdsBank::PERMISSION_BANK_DEPOSIT
+                PermissionIdsBank::PERMISSION_SEE_BANK_HISTORY
             ]);
     }
 

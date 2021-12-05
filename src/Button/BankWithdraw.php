@@ -30,36 +30,30 @@
  *
 */
 
-namespace ShockedPlot7560\FactionMasterBank\Task;
+namespace ShockedPlot7560\FactionMasterBank\Button;
 
-use pocketmine\scheduler\Task;
-use ShockedPlot7560\FactionMaster\Main;
-use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
-use ShockedPlot7560\FactionMasterBank\API\BankAPI;
-use ShockedPlot7560\FactionMasterBank\Database\Entity\Money;
-use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
-use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
+use pocketmine\player\Player;
+use ShockedPlot7560\FactionMaster\Button\Button;
+use ShockedPlot7560\FactionMaster\Route\RouterFactory;
+use ShockedPlot7560\FactionMaster\Utils\Utils;
+use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
+use ShockedPlot7560\FactionMasterBank\Route\BankWithdraw as RouteBankWithdraw;
 
-class SyncServerTask extends Task {
+class BankWithdraw extends Button {
 
-    private $main;
+    const SLUG = "bankWithdraw";
 
-    public function __construct(FactionMasterBank $main) {
-       $this->main = $main; 
+    public function __construct() {
+        $this->setSlug(self::SLUG)
+            ->setContent(function(string $playerName) {
+                return Utils::getText($playerName, "BUTTON_WITHDRAW_BANK");
+            })
+            ->setCallable(function(Player $player) {
+                Utils::processMenu(RouterFactory::get(RouteBankWithdraw::SLUG), $player);
+            })
+            ->setPermissions([
+                PermissionIdsBank::PERMISSION_BANK_WITHDRAW
+            ]);
     }
 
-    public function onRun(int $currentTick): void {
-
-        FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
-            "SELECT * FROM " . MoneyTable::TABLE_NAME,
-            [],
-            function (array $result) {
-                if (count($result) > 0) BankAPI::$money = [];
-                foreach ($result as $money) {
-                    if ($money instanceof Money) BankAPI::$money[$money->faction] = $money;
-                }
-            },
-            Money::class
-        ));
-    }
 }

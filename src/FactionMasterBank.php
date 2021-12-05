@@ -37,19 +37,14 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Button\Collection\CollectionFactory;
-use ShockedPlot7560\FactionMaster\Button\Collection\MainCollectionFac;
 use ShockedPlot7560\FactionMaster\Button\Collection\MainFacCollection;
 use ShockedPlot7560\FactionMaster\Extension\Extension;
-use ShockedPlot7560\FactionMaster\Extension\ExtensionManager;
 use ShockedPlot7560\FactionMaster\libs\JackMD\ConfigUpdater\ConfigUpdater;
 use ShockedPlot7560\FactionMaster\libs\JackMD\UpdateNotifier\UpdateNotifier;
-use ShockedPlot7560\FactionMaster\Main;
-use ShockedPlot7560\FactionMaster\Manager\ConfigManager;
 use ShockedPlot7560\FactionMaster\Manager\ExtensionManager as ManagerExtensionManager;
 use ShockedPlot7560\FactionMaster\Manager\MigrationManager;
 use ShockedPlot7560\FactionMaster\Manager\PermissionManager as ManagerPermissionManager;
 use ShockedPlot7560\FactionMaster\Permission\Permission;
-use ShockedPlot7560\FactionMaster\Permission\PermissionManager;
 use ShockedPlot7560\FactionMaster\Reward\RewardFactory;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
@@ -77,7 +72,7 @@ class FactionMasterBank extends PluginBase implements Extension {
     /** @var FactionMasterBank */
     private static $instance;
 
-    public function onLoad() {
+    public function onLoad(): void {
 
         self::$instance = $this;
 
@@ -102,7 +97,7 @@ class FactionMasterBank extends PluginBase implements Extension {
         ]);
     }
 
-    public function onEnable() {
+    public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 
         if ($this->getServer()->getPluginManager()->getPlugin("ScoreHud") instanceof Plugin) {
@@ -146,9 +141,9 @@ class FactionMasterBank extends PluginBase implements Extension {
         ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "en_EN.yml", Config::YAML), "file-version", 1);
         ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML), "file-version", 1);
         $this->langConfig = [
-            "fr_FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
-            "en_EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML),
-            "tr_TR" => new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML)
+            "FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
+            "EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML),
+            "TR" => new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML)
         ];
     }
 

@@ -32,21 +32,32 @@
 
 namespace ShockedPlot7560\FactionMasterBank\Button\Collection;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use ShockedPlot7560\FactionMaster\Button\Back;
 use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
-use ShockedPlot7560\FactionMasterBank\Route\BankHistory;
+use ShockedPlot7560\FactionMasterBank\Button\BankDeposit;
+use ShockedPlot7560\FactionMasterBank\Button\BankHistory;
+use ShockedPlot7560\FactionMasterBank\Button\BankWithdraw;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
+use ShockedPlot7560\FactionMasterBank\Route\MainBank as RouteMainBank;
 
-class HistoryBank extends Collection {
+class MainBank extends Collection {
 
-    const SLUG = "HistoryBank";
+    const SLUG = "mainBank";
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(self::SLUG);
         $this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
-            $this->register(new Back(RouterFactory::get(BankHistory::SLUG)->getBackRoute()));
+            if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") == true) 
+                $this->register(new BankDeposit());
+            if (FactionMasterBank::getInstance()->getConfig()->get("bank-withdraw") == true) 
+                $this->register(new BankWithdraw());
+            if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") == true) 
+                $this->register(new BankHistory());
+            $this->register(new Back(RouterFactory::get(RouteMainBank::SLUG)->getBackRoute()));
         });
     }
 }

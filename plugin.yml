@@ -1,8 +1,9 @@
 name: FactionMasterBank
 author: ShockedPlot7560
-version: 1.4.2
-api: 3.17.7
+version: 1.5.0
+api: 4.0.0
 main: ShockedPlot7560\FactionMasterBank\FactionMasterBank
+src-namespace-prefix: ShockedPlot7560\FactionMasterBank
 depend: [EconomyAPI, FactionMaster]
 softdepend: ["ScoreHud"]
 description: "Extension which implements a bank system"
