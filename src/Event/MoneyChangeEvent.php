@@ -32,7 +32,6 @@
 
 namespace ShockedPlot7560\FactionMasterBank\Event;
 
-use pocketmine\event\Event;
 use ShockedPlot7560\FactionMaster\Database\Entity\FactionEntity;
 use ShockedPlot7560\FactionMaster\Event\FactionEvent;
 use ShockedPlot7560\FactionMaster\Event\Forcable;

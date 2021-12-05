@@ -36,7 +36,6 @@ use pocketmine\player\Player;
 use ShockedPlot7560\FactionMaster\Button\Button;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
-use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 use ShockedPlot7560\FactionMasterBank\Route\MainBank;
 
 class Bank extends Button {

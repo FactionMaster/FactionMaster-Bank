@@ -33,7 +33,6 @@
 namespace ShockedPlot7560\FactionMasterBank\Route;
 
 use ShockedPlot7560\FactionMaster\libs\Vecnavium\FormsUI\SimpleForm;
-
 use pocketmine\player\Player;
 use ShockedPlot7560\FactionMaster\Button\Collection\CollectionFactory;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;

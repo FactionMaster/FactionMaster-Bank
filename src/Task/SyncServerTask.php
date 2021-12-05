@@ -33,7 +33,6 @@
 namespace ShockedPlot7560\FactionMasterBank\Task;
 
 use pocketmine\scheduler\Task;
-use ShockedPlot7560\FactionMaster\Main;
 use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Database\Entity\Money;

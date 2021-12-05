@@ -38,7 +38,6 @@ use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
 use ShockedPlot7560\FactionMaster\Event\FactionCreateEvent;
 use ShockedPlot7560\FactionMaster\Event\FactionDeleteEvent;
-use ShockedPlot7560\FactionMaster\Main;
 use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
 use ShockedPlot7560\FactionMaster\Task\MenuSendTask;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
