@@ -32,27 +32,27 @@
 
 namespace ShockedPlot7560\FactionMasterBank\Button;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use ShockedPlot7560\FactionMaster\Button\Button;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
-use ShockedPlot7560\FactionMasterBank\Route\BankDeposit as RouteBankDeposit;
+use ShockedPlot7560\FactionMasterBank\Route\BankWithdraw as RouteBankWithdraw;
 
-class BankDeposit extends Button {
+class BankWithdraw extends Button {
 
-    const SLUG = "bankDeposit";
+    const SLUG = "bankWithdraw";
 
     public function __construct() {
         $this->setSlug(self::SLUG)
             ->setContent(function(string $playerName) {
-                return Utils::getText($playerName, "BUTTON_DEPOSIT_BANK");
+                return Utils::getText($playerName, "BUTTON_WITHDRAW_BANK");
             })
             ->setCallable(function(Player $player) {
-                Utils::processMenu(RouterFactory::get(RouteBankDeposit::SLUG), $player);
+                Utils::processMenu(RouterFactory::get(RouteBankWithdraw::SLUG), $player);
             })
             ->setPermissions([
-                PermissionIdsBank::PERMISSION_BANK_DEPOSIT
+                PermissionIdsBank::PERMISSION_BANK_WITHDRAW
             ]);
     }
 

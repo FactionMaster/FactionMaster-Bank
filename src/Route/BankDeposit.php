@@ -34,7 +34,7 @@ namespace ShockedPlot7560\FactionMasterBank\Route;
 
 use ShockedPlot7560\FactionMaster\libs\jojoe77777\FormAPI\CustomForm;
 use onebone\economyapi\EconomyAPI;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use ShockedPlot7560\FactionMaster\API\MainAPI;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
 use ShockedPlot7560\FactionMaster\Route\Route;
@@ -47,9 +47,9 @@ use ShockedPlot7560\FactionMasterBank\Event\MoneyChangeEvent;
 use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 
-class BankWithdraw extends RouteBase implements Route {
+class BankDeposit extends RouteBase implements Route {
 
-    const SLUG = "bankWithdraw";
+    const SLUG = "bankDeposit";
 
     public function getSlug(): string {
         return self::SLUG;
@@ -61,14 +61,14 @@ class BankWithdraw extends RouteBase implements Route {
 
     public function getPermissions(): array {
         return [
-            PermissionIdsBank::PERMISSION_BANK_WITHDRAW
+            PermissionIdsBank::PERMISSION_BANK_DEPOSIT
         ];
     }
 
     public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
         $this->init($player, $userEntity, $userPermissions, $params);
-        if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") != true) {
-            Utils::processMenu($this->getBackRoute(), $this->getPlayer());
+        if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") != true) { 
+            Utils::processMenu($this->getBackRoute(), $this->getPlayer()); 
             return;
         }
         $message = "";
@@ -82,22 +82,23 @@ class BankWithdraw extends RouteBase implements Route {
             if ($data[1] !== "") {
                 $suggest = (int) $data[1];
                 if ($suggest > 0) {
-                    $factionName = MainAPI::getUser($player->getName())->getFactionName();
+                    $factionName = MainAPI::getUser($player->getName())->faction;
                     $moneyInstance = BankAPI::getMoney($factionName);
-                    if ($moneyInstance->getAmount() - $suggest < 0) {
-                        Utils::processMenu(RouterFactory::get(self::SLUG), $player, [Utils::getText($player->getName(), "NO_ENOUGH_MONEY_FACTION")]);
+                    $money = EconomyAPI::getInstance()->myMoney($player->getName());
+                    if ($money - $suggest < 0) {
+                        Utils::processMenu(RouterFactory::get(self::SLUG), $player, [Utils::getText($player->getName(), "NO_ENOUGH_MONEY")]);
                         return;
                     }
-                    if (EconomyAPI::getInstance()->addMoney($player->getName(), $suggest) == EconomyAPI::RET_SUCCESS) {
-                        BankAPI::updateMoney($factionName, $suggest * -1, $player->getName());
+                    if (EconomyAPI::getInstance()->reduceMoney($player->getName(), $suggest) == EconomyAPI::RET_SUCCESS) {
+                        BankAPI::updateMoney($factionName, $suggest, $player->getName());
                         Utils::newMenuSendTask(new MenuSendTask(
                             function () use ($factionName, $moneyInstance, $suggest) {
-                                $newMoney = $moneyInstance->getAmount() - $suggest;
-                                return BankAPI::getMoney($factionName)->getAmount() - $suggest == $newMoney;
+                                $newMoney = $moneyInstance->getAmount() + $suggest;
+                                return BankAPI::getMoney($factionName)->getAmount() + $suggest == $newMoney;
                             },
                             function () use ($player, $data) {
-                                (new MoneyChangeEvent(MainAPI::getFactionOfPlayer($player->getName()), (int) $data[1] * -1))->call();
-                                Utils::processMenu($this->getBackRoute(), $player, [Utils::getText($player->getName(), "SUCCESS_BANK_WITHDRAW", ["money" => $data[1]])]);
+                                (new MoneyChangeEvent(MainAPI::getFactionOfPlayer($player->getName()), (int) $data[1]))->call();
+                                Utils::processMenu($this->getBackRoute(), $player, [Utils::getText($player->getName(), "SUCCESS_BANK_DEPOSIT", ["money" => $data[1]])]);
                             },
                             function () use ($player) {
                                 Utils::processMenu(RouterFactory::get(self::SLUG), $player, [Utils::getText($player->getName(), "ERROR")]);
@@ -115,9 +116,9 @@ class BankWithdraw extends RouteBase implements Route {
 
     private function getForm(string $message = "") : CustomForm {
         $menu = new CustomForm($this->call());
-        $menu->setTitle(Utils::getText($this->getUserEntity()->getName(), "BANK_WITHDRAW_TITLE"));
+        $menu->setTitle(Utils::getText($this->getUserEntity()->getName(), "BANK_DEPOSIT_TITLE"));
         $menu->addLabel($message);
-        $menu->addInput(Utils::getText($this->getUserEntity()->getName(), "BANK_WITHDRAW_INPUT"));
+        $menu->addInput(Utils::getText($this->getUserEntity()->getName(), "BANK_DEPOSIT_INPUT"));
         return $menu;
     }
 }
