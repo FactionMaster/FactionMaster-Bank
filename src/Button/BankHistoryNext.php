@@ -44,6 +44,7 @@ use ShockedPlot7560\FactionMasterBank\Database\Table\BankHistoryTable;
 use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory as RouteBankHistory;
+use function var_dump;
 
 class BankHistoryNext extends Button {
 	const SLUG = "bankHistoryNext";
@@ -51,7 +52,7 @@ class BankHistoryNext extends Button {
 	public function __construct(int $currentPage) {
 		$this->setSlug(self::SLUG)
 			->setContent(function(string $playerName) {
-				return "Next";
+				return Utils::getText($playerName, "BUTTON_NEXT_HISTORY_BANK");
 			})
 			->setCallable(function(Player $player) use ($currentPage) {
 				$faction = MainAPI::getFactionOfPlayer($player->getName());

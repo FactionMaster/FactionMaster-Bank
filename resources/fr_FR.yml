@@ -1,5 +1,5 @@
 # DO NOT EDIT THIS LINE
-file-version: 2
+file-version: 3
 # DO NOT EDIT THIS LINE
 
 BANK_MAIN_PANEL_TITLE: "Banque de faction"
@@ -20,6 +20,8 @@ BUTTON_DEPOSIT_BANK: "Déposer de l'argent"
 BUTTON_WITHDRAW_BANK: "Retirer de l'argent"
 BUTTON_BANK: "Banque de faction"
 BUTTON_HISTORY_BANK: "Historique des transactions"
+BUTTON_NEXT_HISTORY_BANK: "Page suivante"
+BUTTON_PREVIOUS_HISTORY_BANK: "Page précédente"
 
 PERMISSION_BANK_WITHDRAW: "Retirer de l'argent dans la banque de faction"
 PERMISSION_BANK_DEPOSIT: "Déposer de l'argent dans la banque de faction"

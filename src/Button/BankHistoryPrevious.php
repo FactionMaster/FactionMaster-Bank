@@ -51,7 +51,7 @@ class BankHistoryPrevious extends Button {
 	public function __construct(int $currentPage) {
 		$this->setSlug(self::SLUG)
 			->setContent(function(string $playerName) {
-				return "Previous";
+				return Utils::getText($playerName, "BUTTON_PREVIOUS_HISTORY_BANK");
 			})
 			->setCallable(function(Player $player) use ($currentPage) {
 				$faction = MainAPI::getFactionOfPlayer($player->getName());
