@@ -49,6 +49,7 @@ use ShockedPlot7560\FactionMaster\Manager\SyncServerManager;
 use ShockedPlot7560\FactionMaster\Permission\Permission;
 use ShockedPlot7560\FactionMaster\Reward\RewardFactory;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
+use ShockedPlot7560\FactionMaster\Task\DatabaseTask;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Button\Bank;
@@ -65,6 +66,7 @@ use ShockedPlot7560\FactionMasterBank\Route\BankDeposit;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory;
 use ShockedPlot7560\FactionMasterBank\Route\BankWithdraw;
 use ShockedPlot7560\FactionMasterBank\Route\MainBank;
+
 use function count;
 use function mkdir;
 
@@ -108,7 +110,21 @@ class FactionMasterBank extends PluginBase implements Extension {
 			$this->getServer()->getPluginManager()->registerEvents(new ScoreHudListener($this), $this);
 		}
 		UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
-
+		$this->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+			"SELECT * FROM " . MoneyTable::TABLE_NAME,
+			[],
+			function (array $result) {
+				if (count($result) > 0) {
+					BankAPI::$money = [];
+				}
+				foreach ($result as $money) {
+					if ($money instanceof EntityMoney) {
+						BankAPI::$money[$money->faction] = $money;
+					}
+				}
+			},
+			EntityMoney::class
+		));
 		LeaderboardManager::registerLeaderboard(new FactionMoneyLeaderboard(FactionMaster::getInstance()));
 		SyncServerManager::addItem(
 			"SELECT * FROM " . MoneyTable::TABLE_NAME,
@@ -118,7 +134,7 @@ class FactionMasterBank extends PluginBase implements Extension {
 					BankAPI::$money = [];
 				}
 				foreach ($result as $money) {
-					if ($money instanceof Money) {
+					if ($money instanceof EntityMoney) {
 						BankAPI::$money[$money->faction] = $money;
 					}
 				}
