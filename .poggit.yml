@@ -2,6 +2,7 @@
 build-by-default: true
 branches:
 - master
+- pmmp4
 projects:
   FactionMaster-Bank:
     path: ""
