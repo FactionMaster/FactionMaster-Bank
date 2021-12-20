@@ -1,6 +1,6 @@
 name: FactionMasterBank
 author: ShockedPlot7560
-version: 1.5.0
+version: 2.0.0
 api: 4.0.0
 main: ShockedPlot7560\FactionMasterBank\FactionMasterBank
 src-namespace-prefix: ShockedPlot7560\FactionMasterBank

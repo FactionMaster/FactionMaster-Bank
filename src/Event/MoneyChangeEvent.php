@@ -36,16 +36,15 @@ use ShockedPlot7560\FactionMaster\Database\Entity\FactionEntity;
 use ShockedPlot7560\FactionMaster\Event\FactionEvent;
 use ShockedPlot7560\FactionMaster\Event\Forcable;
 
-class MoneyChangeEvent extends FactionEvent implements Forcable{
+class MoneyChangeEvent extends FactionEvent implements Forcable {
+	private $money;
 
-    private $money;
+	public function __construct(FactionEntity $faction, int $money, bool $isForce = false) {
+		parent::__construct($faction, $isForce);
+		$this->money = $money;
+	}
 
-    public function __construct(FactionEntity $faction, int $money, bool $isForce = false) {
-        parent::__construct($faction, $isForce);
-        $this->money = $money;
-    }
-
-    public function getMoney(): int {
-        return $this->money;
-    }
+	public function getMoney(): int {
+		return $this->money;
+	}
 }

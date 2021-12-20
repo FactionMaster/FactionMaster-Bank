@@ -5,12 +5,12 @@
  *      ______           __  _                __  ___           __
  *     / ____/___ ______/ /_(_)___  ____     /  |/  /___ ______/ /____  _____
  *    / /_  / __ `/ ___/ __/ / __ \/ __ \   / /|_/ / __ `/ ___/ __/ _ \/ ___/
- *   / __/ / /_/ / /__/ /_/ / /_/ / / / /  / /  / / /_/ (__  ) /_/  __/ /  
- *  /_/    \__,_/\___/\__/_/\____/_/ /_/  /_/  /_/\__,_/____/\__/\___/_/ 
+ *   / __/ / /_/ / /__/ /_/ / /_/ / / / /  / /  / / /_/ (__  ) /_/  __/ /
+ *  /_/    \__,_/\___/\__/_/\____/_/ /_/  /_/  /_/\__,_/____/\__/\___/_/
  *
  * FactionMaster - A Faction plugin for PocketMine-MP
  * This file is part of FactionMaster
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -24,9 +24,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @author ShockedPlot7560 
+ * @author ShockedPlot7560
  * @link https://github.com/ShockedPlot7560
- * 
+ *
  *
 */
 
@@ -38,27 +38,30 @@ use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Database\Entity\Money;
 use ShockedPlot7560\FactionMasterBank\Database\Table\MoneyTable;
 use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
+use function count;
 
 class SyncServerTask extends Task {
+	private $main;
 
-    private $main;
+	public function __construct(FactionMasterBank $main) {
+		$this->main = $main;
+	}
 
-    public function __construct(FactionMasterBank $main) {
-       $this->main = $main; 
-    }
-
-    public function onRun(): void {
-
-        FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
-            "SELECT * FROM " . MoneyTable::TABLE_NAME,
-            [],
-            function (array $result) {
-                if (count($result) > 0) BankAPI::$money = [];
-                foreach ($result as $money) {
-                    if ($money instanceof Money) BankAPI::$money[$money->faction] = $money;
-                }
-            },
-            Money::class
-        ));
-    }
+	public function onRun(): void {
+		FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+			"SELECT * FROM " . MoneyTable::TABLE_NAME,
+			[],
+			function (array $result) {
+				if (count($result) > 0) {
+					BankAPI::$money = [];
+				}
+				foreach ($result as $money) {
+					if ($money instanceof Money) {
+						BankAPI::$money[$money->faction] = $money;
+					}
+				}
+			},
+			Money::class
+		));
+	}
 }

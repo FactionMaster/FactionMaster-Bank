@@ -5,12 +5,12 @@
  *      ______           __  _                __  ___           __
  *     / ____/___ ______/ /_(_)___  ____     /  |/  /___ ______/ /____  _____
  *    / /_  / __ `/ ___/ __/ / __ \/ __ \   / /|_/ / __ `/ ___/ __/ _ \/ ___/
- *   / __/ / /_/ / /__/ /_/ / /_/ / / / /  / /  / / /_/ (__  ) /_/  __/ /  
- *  /_/    \__,_/\___/\__/_/\____/_/ /_/  /_/  /_/\__,_/____/\__/\___/_/ 
+ *   / __/ / /_/ / /__/ /_/ / /_/ / / / /  / /  / / /_/ (__  ) /_/  __/ /
+ *  /_/    \__,_/\___/\__/_/\____/_/ /_/  /_/  /_/\__,_/____/\__/\___/_/
  *
  * FactionMaster - A Faction plugin for PocketMine-MP
  * This file is part of FactionMaster
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -24,9 +24,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @author ShockedPlot7560 
+ * @author ShockedPlot7560
  * @link https://github.com/ShockedPlot7560
- * 
+ *
  *
 */
 
@@ -39,15 +39,15 @@ use ShockedPlot7560\FactionMaster\Utils\Utils;
 
 class BankHistoryTable implements TableInterface {
 
-    /** @var \PDO */
-    private $PDO;
+	/** @var \PDO */
+	private $PDO;
 
-    const TABLE_NAME = "bank_history";
-    const SLUG = "bank_history";
+	const TABLE_NAME = "bank_history";
+	const SLUG = "bank_history";
 
-    public function init(): self {
-        $auto_increment = Utils::getConfig("PROVIDER") === DatabaseManager::MYSQL_PROVIDER ? "AUTO_INCREMENT" : "AUTOINCREMENT";
-        $this->PDO->query("CREATE TABLE IF NOT EXISTS `". self::TABLE_NAME ."` ( 
+	public function init(): self {
+		$auto_increment = Utils::getConfig("PROVIDER") === DatabaseManager::MYSQL_PROVIDER ? "AUTO_INCREMENT" : "AUTOINCREMENT";
+		$this->PDO->query("CREATE TABLE IF NOT EXISTS `" . self::TABLE_NAME . "` ( 
             `id` INTEGER NOT NULL PRIMARY KEY $auto_increment, 
             `faction` VARCHAR(255) NOT NULL , 
             `entity` TEXT NOT NULL, 
@@ -55,11 +55,10 @@ class BankHistoryTable implements TableInterface {
             `type` INT(1) NOT NULL,
             `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )");
-        return $this;
-    }
+		return $this;
+	}
 
-    public function __construct(PDO $PDO) {
-        $this->PDO = $PDO;
-    }
-
+	public function __construct(PDO $PDO) {
+		$this->PDO = $PDO;
+	}
 }

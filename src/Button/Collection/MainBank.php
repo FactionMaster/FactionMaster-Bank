@@ -5,12 +5,12 @@
  *      ______           __  _                __  ___           __
  *     / ____/___ ______/ /_(_)___  ____     /  |/  /___ ______/ /____  _____
  *    / /_  / __ `/ ___/ __/ / __ \/ __ \   / /|_/ / __ `/ ___/ __/ _ \/ ___/
- *   / __/ / /_/ / /__/ /_/ / /_/ / / / /  / /  / / /_/ (__  ) /_/  __/ /  
- *  /_/    \__,_/\___/\__/_/\____/_/ /_/  /_/  /_/\__,_/____/\__/\___/_/ 
+ *   / __/ / /_/ / /__/ /_/ / /_/ / / / /  / /  / / /_/ (__  ) /_/  __/ /
+ *  /_/    \__,_/\___/\__/_/\____/_/ /_/  /_/  /_/\__,_/____/\__/\___/_/
  *
  * FactionMaster - A Faction plugin for PocketMine-MP
  * This file is part of FactionMaster
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -24,9 +24,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @author ShockedPlot7560 
+ * @author ShockedPlot7560
  * @link https://github.com/ShockedPlot7560
- * 
+ *
  *
 */
 
@@ -44,20 +44,21 @@ use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\Route\MainBank as RouteMainBank;
 
 class MainBank extends Collection {
+	const SLUG = "mainBank";
 
-    const SLUG = "mainBank";
-
-    public function __construct()
-    {
-        parent::__construct(self::SLUG);
-        $this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
-            if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") == true) 
-                $this->register(new BankDeposit());
-            if (FactionMasterBank::getInstance()->getConfig()->get("bank-withdraw") == true) 
-                $this->register(new BankWithdraw());
-            if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") == true) 
-                $this->register(new BankHistory());
-            $this->register(new Back(RouterFactory::get(RouteMainBank::SLUG)->getBackRoute()));
-        });
-    }
+	public function __construct() {
+		parent::__construct(self::SLUG);
+		$this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
+			if (FactionMasterBank::getInstance()->getConfig()->get("bank-deposit") == true) {
+				$this->register(new BankDeposit());
+			}
+			if (FactionMasterBank::getInstance()->getConfig()->get("bank-withdraw") == true) {
+				$this->register(new BankWithdraw());
+			}
+			if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") == true) {
+				$this->register(new BankHistory());
+			}
+			$this->register(new Back(RouterFactory::get(RouteMainBank::SLUG)->getBackRoute()));
+		});
+	}
 }
