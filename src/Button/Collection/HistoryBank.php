@@ -37,14 +37,30 @@ use ShockedPlot7560\FactionMaster\Button\Back;
 use ShockedPlot7560\FactionMaster\Button\Collection\Collection;
 use ShockedPlot7560\FactionMaster\Database\Entity\UserEntity;
 use ShockedPlot7560\FactionMaster\Route\RouterFactory;
+use ShockedPlot7560\FactionMasterBank\Button\BankHistoryNext;
+use ShockedPlot7560\FactionMasterBank\Button\BankHistoryPrevious;
+use ShockedPlot7560\FactionMasterBank\Database\Entity\BankHistory as EntityBankHistory;
+use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory;
+use function ceil;
+use function count;
 
 class HistoryBank extends Collection {
 	const SLUG = "HistoryBank";
 
+	/**
+	 * @param EntityBankHistory[]
+	 */
 	public function __construct() {
 		parent::__construct(self::SLUG);
-		$this->registerCallable(self::SLUG, function(Player $player, UserEntity $user) {
+		$this->registerCallable(self::SLUG, function(Player $player, UserEntity $user, array $results, int $currentPage = 1) {
+			if ($currentPage > 1) {
+				$this->register(new BankHistoryPrevious($currentPage));
+			}
+			$maxPage = ceil(count($results) / FactionMasterBank::getInstance()->getConfig()->get("max-item-history"));
+			if ($currentPage < $maxPage) {
+				$this->register(new BankHistoryNext($currentPage));
+			}
 			$this->register(new Back(RouterFactory::get(BankHistory::SLUG)->getBackRoute()));
 		});
 	}

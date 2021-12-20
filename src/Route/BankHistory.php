@@ -46,7 +46,9 @@ use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 use Vecnavium\FormsUI\SimpleForm;
 use function abs;
+use function ceil;
 use function count;
+use function min;
 
 class BankHistory extends RouteBase implements Route {
 	const SLUG = "bankHistory";
@@ -65,6 +67,9 @@ class BankHistory extends RouteBase implements Route {
 		];
 	}
 
+	/**
+	 * @param array $params First element -> transaction history, second -> currentpage
+	 */
 	public function __invoke(Player $player, UserEntity $userEntity, array $userPermissions, ?array $params = null) {
 		$this->init($player, $userEntity, $userPermissions, $params);
 		if (FactionMasterBank::getInstance()->getConfig()->get("bank-history") != true) {
@@ -76,7 +81,17 @@ class BankHistory extends RouteBase implements Route {
 		if (isset($params[0])) {
 			/** @var EntityBankHistory[] */
 			$histories = $params[0];
-			foreach ($histories as $history) {
+			$maxItemPerPage = FactionMasterBank::getInstance()->getConfig()->get("max-item-history");
+			if (!empty($params[1])) {
+				$currentPage = $params[1];
+				if ($currentPage > ceil(count($histories) / $maxItemPerPage)) {
+					$currentPage = ceil(count($histories) / $maxItemPerPage);
+				}
+			} else {
+				$currentPage = 1;
+			}
+			for ($i=($currentPage - 1) * $maxItemPerPage; $i < min($currentPage * $maxItemPerPage, count($histories)); $i++) {
+				$history = $histories[$i];
 				if ($history->getType() == BankAPI::BANK_HISTORY_ADD_MODE) {
 					$content .= "\n§r §7> §2+" . abs($history->getAmount()) . " §o§7: " . $history->getEntityString();
 				} elseif ($history->getType() == BankAPI::BANK_HISTORY_REMOVE_MODE) {
@@ -87,9 +102,8 @@ class BankHistory extends RouteBase implements Route {
 				$content .= Utils::getText($this->getUserEntity()->getName(), "NO_TRANSACTION");
 			}
 		}
-		$this->setCollection(CollectionFactory::get(HistoryBank::SLUG)->init($this->getPlayer(), $this->getUserEntity()));
+		$this->setCollection(CollectionFactory::get(HistoryBank::SLUG)->init($this->getPlayer(), $this->getUserEntity(), $params[0], $params[1]));
 		$player->sendForm($this->getForm($content));
-		;
 	}
 
 	public function call() : callable {
@@ -97,7 +111,7 @@ class BankHistory extends RouteBase implements Route {
 			if ($data === null) {
 				return;
 			}
-			Utils::processMenu($this->getBackRoute(), $player);
+			$this->getCollection()->process($data, $player);
 		};
 	}
 

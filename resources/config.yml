@@ -26,7 +26,7 @@
  # @link https://github.com/ShockedPlot7560
  #
 # DO NOT EDIT THIS LINE
-file-version: 1
+file-version: 2
 # DO NOT EDIT THIS LINE
  
 default-faction-money: 0
@@ -38,4 +38,6 @@ default-faction-money: 0
 bank-withdraw: false
 bank-deposit: true
 bank-history: true
+
+max-item-history: 100
 ...

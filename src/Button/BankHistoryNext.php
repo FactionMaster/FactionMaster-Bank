@@ -45,15 +45,15 @@ use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
 use ShockedPlot7560\FactionMasterBank\Route\BankHistory as RouteBankHistory;
 
-class BankHistory extends Button {
-	const SLUG = "bankHistory";
+class BankHistoryNext extends Button {
+	const SLUG = "bankHistoryNext";
 
-	public function __construct() {
+	public function __construct(int $currentPage) {
 		$this->setSlug(self::SLUG)
 			->setContent(function(string $playerName) {
-				return Utils::getText($playerName, "BUTTON_HISTORY_BANK");
+				return "Next";
 			})
-			->setCallable(function(Player $player) {
+			->setCallable(function(Player $player) use ($currentPage) {
 				$faction = MainAPI::getFactionOfPlayer($player->getName());
 				if ($faction instanceof FactionEntity) {
 					FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
@@ -61,8 +61,9 @@ class BankHistory extends Button {
 						[
 							"faction" => $faction->name
 						],
-						function (array $result) use ($player) {
-							Utils::processMenu(RouterFactory::get(RouteBankHistory::SLUG), $player, [$result, 1]);
+						function (array $result) use ($player, $currentPage) {
+							var_dump("ok");
+							Utils::processMenu(RouterFactory::get(RouteBankHistory::SLUG), $player, [$result, $currentPage + 1]);
 						},
 						EntityBankHistory::class
 					));
