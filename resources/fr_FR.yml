@@ -1,13 +1,15 @@
 # DO NOT EDIT THIS LINE
-file-version: 1
+file-version: 2
 # DO NOT EDIT THIS LINE
 
 BANK_MAIN_PANEL_TITLE: "Banque de faction"
 BANK_DEPOSIT_TITLE: "Déposer de l'argent"
 BANK_WITHDRAW_TITLE: "Retirer de l'argent"
+BANK_HISTORY_TITLE: "Historique bancaire"
 BANK_DEPOSIT_INPUT: "Entrer le montant que vous souhaiter ajouter à la banque de faction, entrer un champ vide pour revenir en arrière"
 BANK_WITHDRAW_INPUT: "Entrer le montant que vous souhaiter retirer de la banque de faction, entrer un champ vide pour revenir en arrière"
 BANK_MAIN_CONTENT: "§7Solde actuel: §6{{money}}§7$"
+BANK_HISTORY_CONTENT: "Voici toutes les transactions effectuées sur votre banque"
 SUCCESS_BANK_DEPOSIT: " §a>> §2Vous avez déposé {{money}}$ avec succès !"
 SUCCESS_BANK_WITHDRAW: " §a>> §2Vous avez retiré {{money}}$ avec succès !"
 NO_ENOUGH_MONEY: " §c>> §4Vous n'avez pas assez d'argent"
