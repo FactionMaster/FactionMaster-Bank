@@ -138,16 +138,22 @@ class FactionMasterBank extends PluginBase implements Extension {
         $this->saveResource('fr_FR.yml');
         $this->saveResource('en_EN.yml');
         $this->saveResource('tr_TR.yml');
+        $this->saveResource('ja_JP.yml');
+        $this->saveResource('es_ES.yml');
         $this->saveResource('config.yml');
         $this->config = new Config($this->getDataFolder() . "config.yml");
         ConfigUpdater::checkUpdate($this, $this->config, "file-version", 1);
         ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML), "file-version", 1);
         ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "en_EN.yml", Config::YAML), "file-version", 1);
         ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML), "file-version", 1);
+        ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "ja_JP.yml", Config::YAML), "file-version", 1);
+        ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "es_ES.yml", Config::YAML), "file-version", 1);
         $this->langConfig = [
             "FR" => new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML),
             "EN" => new Config($this->getDataFolder() . "en_EN.yml", Config::YAML),
-            "TR" => new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML)
+            "TR" => new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML),
+            "JP" => new Config($this->getDataFolder() . "ja_JP.yml", Config::YAML),
+            "ES" => new Config($this->getDataFolder() . "es_ES.yml", Config::YAML)
         ];
     }
 
