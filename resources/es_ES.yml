@@ -1,0 +1,26 @@
+# DO NOT EDIT THIS LINE
+file-version: 1
+# DO NOT EDIT THIS LINE
+
+BANK_MAIN_PANEL_TITLE: "Banco de facciones"
+BANK_DEPOSIT_TITLE: "Depositar dinero"
+BANK_WITHDRAW_TITLE: "Retirar dinero"
+BANK_DEPOSIT_INPUT: "Ingrese la cantidad que desea agregar al banco de facciones, ingrese un campo en blanco para regresar"
+BANK_WITHDRAW_INPUT: "Ingrese la cantidad que desea quitar la cantidad al banco de la facción, ingrese un campo en blanco para regresar"
+BANK_MAIN_CONTENT: "§7Corriente de soldadura: §6{{money}}§7$"
+SUCCESS_BANK_DEPOSIT: " §a>> §2Ha depositado con éxito: {{money}}$!"
+SUCCESS_BANK_WITHDRAW: " §a>> §2Te has retirado con éxito: {{money}}$!"
+NO_ENOUGH_MONEY: " §c>> §4No tienes suficiente dinero"
+NO_ENOUGH_MONEY_FACTION: " §c>> §4La facción no tiene suficiente dinero"
+NO_TRANSACTION: " §c>> §4No se han realizado transacciones en este momento."
+
+BUTTON_DEPOSIT_BANK: "Depositar dinero"
+BUTTON_WITHDRAW_BANK: "Retirar dinero"
+BUTTON_BANK: "Banco de facciones"
+BUTTON_HISTORY_BANK: "Historial de transacciones"
+
+PERMISSION_BANK_WITHDRAW: "Retirar dinero en el banco de facciones"
+PERMISSION_BANK_DEPOSIT: "Depositar dinero en el banco de la facción"
+PERMISSION_SEE_BANK_HISTORY: "Ver el historial de transacciones del banco de facciones"
+
+REWARD_MONEY_NAME: "Dinero de facción"

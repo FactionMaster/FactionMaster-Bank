@@ -1,0 +1,26 @@
+# DO NOT EDIT THIS LINE
+file-version: 1
+# DO NOT EDIT THIS LINE
+
+BANK_MAIN_PANEL_TITLE: "派閥銀行"
+BANK_DEPOSIT_TITLE: "供託金"
+BANK_WITHDRAW_TITLE: "お金を引き出す"
+BANK_DEPOSIT_INPUT: "派閥銀行に追加したい金額を入力し、空白のフィールドに戻って戻る"
+BANK_WITHDRAW_INPUT: "派閥銀行に削除したい金額を入力し、空白のフィールドに戻って戻る"
+BANK_MAIN_CONTENT: "§7現在の販売： §6{{money}}§7$"
+SUCCESS_BANK_DEPOSIT: " §a>> §2入金に成功しました: {{money}}$!"
+SUCCESS_BANK_WITHDRAW: " §a>> §2正常に撤回しました: {{money}}$!"
+NO_ENOUGH_MONEY: " §c>> §4あなたは十分なお金を持っていません"
+NO_ENOUGH_MONEY_FACTION: " §c>> §4派閥には十分なお金がありません"
+NO_TRANSACTION: " §c>> §4現在、取引は行われていません。"
+
+BUTTON_DEPOSIT_BANK: "供託金"
+BUTTON_WITHDRAW_BANK: "お金を引き出す"
+BUTTON_BANK: "派閥銀行"
+BUTTON_HISTORY_BANK: "取引履歴"
+
+PERMISSION_BANK_WITHDRAW: "派閥銀行でお金を引き出す"
+PERMISSION_BANK_DEPOSIT: "派閥銀行で"
+PERMISSION_SEE_BANK_HISTORY: "派閥銀行の取引履歴を表示する"
+
+REWARD_MONEY_NAME: "派閥のお金"
