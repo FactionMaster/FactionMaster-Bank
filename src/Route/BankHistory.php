@@ -44,7 +44,7 @@ use ShockedPlot7560\FactionMasterBank\Button\Collection\HistoryBank;
 use ShockedPlot7560\FactionMasterBank\Database\Entity\BankHistory as EntityBankHistory;
 use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
-use Vecnavium\FormsUI\SimpleForm;
+use ShockedPlot7560\FactionMaster\libs\Vecnavium\FormsUI\SimpleForm;
 use function abs;
 use function ceil;
 use function count;

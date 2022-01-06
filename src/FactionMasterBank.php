@@ -32,8 +32,8 @@
 
 namespace ShockedPlot7560\FactionMasterBank;
 
-use JackMD\ConfigUpdater\ConfigUpdater;
-use JackMD\UpdateNotifier\UpdateNotifier;
+use ShockedPlot7560\FactionMaster\libs\JackMD\ConfigUpdater\ConfigUpdater;
+use ShockedPlot7560\FactionMaster\libs\JackMD\UpdateNotifier\UpdateNotifier;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use ShockedPlot7560\FactionMaster\API\MainAPI;

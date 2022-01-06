@@ -42,7 +42,7 @@ use ShockedPlot7560\FactionMaster\Route\RouterFactory;
 use ShockedPlot7560\FactionMaster\Utils\Utils;
 use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Button\Collection\MainBank as CollectionMainBank;
-use Vecnavium\FormsUI\SimpleForm;
+use ShockedPlot7560\FactionMaster\libs\Vecnavium\FormsUI\SimpleForm;
 
 class MainBank extends RouteBase implements Route {
 	const SLUG = "mainBank";

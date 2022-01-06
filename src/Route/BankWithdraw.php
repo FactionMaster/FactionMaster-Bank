@@ -45,7 +45,7 @@ use ShockedPlot7560\FactionMasterBank\API\BankAPI;
 use ShockedPlot7560\FactionMasterBank\Event\MoneyChangeEvent;
 use ShockedPlot7560\FactionMasterBank\FactionMasterBank;
 use ShockedPlot7560\FactionMasterBank\PermissionIdsBank;
-use Vecnavium\FormsUI\CustomForm;
+use ShockedPlot7560\FactionMaster\libs\Vecnavium\FormsUI\CustomForm;
 use function is_string;
 
 class BankWithdraw extends RouteBase implements Route {
