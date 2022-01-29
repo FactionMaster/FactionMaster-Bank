@@ -48,7 +48,7 @@ class SyncServerTask extends Task {
 	}
 
 	public function onRun(): void {
-		FactionMasterBank::getInstance()->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
+		$this->main->getServer()->getAsyncPool()->submitTask(new DatabaseTask(
 			"SELECT * FROM " . MoneyTable::TABLE_NAME,
 			[],
 			function (array $result) {
