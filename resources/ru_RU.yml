@@ -1,0 +1,30 @@
+# НЕ ТРОГАТЬ
+file-version: 1
+# НЕ ТРОГАТЬ
+
+BANK_MAIN_PANEL_TITLE: "Банк фракции"
+BANK_DEPOSIT_TITLE: "Внести деньги"
+BANK_WITHDRAW_TITLE: "Вывести деньги"
+BANK_HISTORY_TITLE: "Банковская история"
+BANK_DEPOSIT_INPUT: "Введите сумму, которую вы хотите добавить в банк фракций, введите пустое поле, чтобы вернуться назад"
+BANK_WITHDRAW_INPUT: "Введите сумму, которую вы хотите вывести из банка фракции, введите пустое поле, чтобы вернуться"
+BANK_MAIN_CONTENT: "§7Текущий остаток: §6{{money}}§7$"
+BANK_HISTORY_CONTENT: "Вот все операции, выполняемые в банке фракций"
+SUCCESS_BANK_DEPOSIT: " §a>> §2Вы успешно внесли депозит {{money}}$!"
+SUCCESS_BANK_WITHDRAW: " §a>> §2Вы успешно вывели средства {{money}}$!"
+NO_ENOUGH_MONEY: " §c>> §4У тебя недостаточно денег"
+NO_ENOUGH_MONEY_FACTION: " §c>> §4У фракции не хватает денег"
+NO_TRANSACTION: " §c>> §4В настоящее время никаких транзакций совершено не было"
+
+BUTTON_DEPOSIT_BANK: "Внести деньги"
+BUTTON_WITHDRAW_BANK: "Вывести денеги"
+BUTTON_BANK: "Банк фракции"
+BUTTON_HISTORY_BANK: "История транзакций"
+BUTTON_NEXT_HISTORY_BANK: "Следующая страница"
+BUTTON_PREVIOUS_HISTORY_BANK: "Предыдущая страница"
+
+PERMISSION_BANK_WITHDRAW: "Вывод денег из банка фракции"
+PERMISSION_BANK_DEPOSIT: "Внесение денег в банк фракции"
+PERMISSION_SEE_BANK_HISTORY: "Просмотр истории транзакций банка фракции"
+
+REWARD_MONEY_NAME: "Деньги фракции"
