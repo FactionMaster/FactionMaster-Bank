@@ -23,7 +23,7 @@ BUTTON_HISTORY_BANK: "История транзакций"
 BUTTON_NEXT_HISTORY_BANK: "Следующая страница"
 BUTTON_PREVIOUS_HISTORY_BANK: "Предыдущая страница"
 
-PERMISSION_BANK_WITHDRAW: "Вывод денег в банке фракции"
+PERMISSION_BANK_WITHDRAW: "Вывод денег из банка фракции"
 PERMISSION_BANK_DEPOSIT: "Внесение денег в банк фракции"
 PERMISSION_SEE_BANK_HISTORY: "Просмотр истории транзакций банка фракции"
 
