@@ -1,13 +1,15 @@
 # DO NOT EDIT THIS LINE
-file-version: 1
+file-version: 2
 # DO NOT EDIT THIS LINE
 
 BANK_MAIN_PANEL_TITLE: "Klan bankası"
 BANK_DEPOSIT_TITLE: "Para yatır"
 BANK_WITHDRAW_TITLE: "Para çek"
+BANK_HISTORY_TITLE: "Bank geçmişi"
 BANK_DEPOSIT_INPUT: "Klan bankasına eklemek istediğiniz tutarı girin, geri dönmek için boş bir alan girin"
 BANK_WITHDRAW_INPUT: "Tutarı klan bankasına kaldırmak istediğiniz tutarı girin, geri dönmek için boş bir alan girin"
 BANK_MAIN_CONTENT: "§7Klan parası: §6{{money}}§7$"
+BANK_HISTORY_CONTENT: "İşte klan bankasında yapılan tüm işlemler"
 SUCCESS_BANK_DEPOSIT: " §a>> §2{{money}}$ başarıyla yatırdınız!"
 SUCCESS_BANK_WITHDRAW: " §a>> §2{{money}}$ başarıyla çektiniz!"
 NO_ENOUGH_MONEY: " §c>> §4Yeteri kadar paran yok"
@@ -18,6 +20,8 @@ BUTTON_DEPOSIT_BANK: "Para yatır"
 BUTTON_WITHDRAW_BANK: "Para çek"
 BUTTON_BANK: "Klan bankası"
 BUTTON_HISTORY_BANK: "İşlem geçmişi"
+UTTON_NEXT_HISTORY_BANK: "Sonraki sayfa"
+BUTTON_PREVIOUS_HISTORY_BANK: "Önceki sayfa"
 
 PERMISSION_BANK_WITHDRAW: "Klan bankasında para çeker"
 PERMISSION_BANK_DEPOSIT: "Klan bankasına para yatırır"

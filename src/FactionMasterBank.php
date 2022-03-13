@@ -178,7 +178,7 @@ class FactionMasterBank extends PluginBase implements Extension {
 		ConfigUpdater::checkUpdate($this, $this->config, "file-version", 2);
 		ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "fr_FR.yml", Config::YAML), "file-version", 3);
 		ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "en_EN.yml", Config::YAML), "file-version", 3);
-		ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML), "file-version", 1);
+		ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "tr_TR.yml", Config::YAML), "file-version", 2);
 		ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "ja_JP.yml", Config::YAML), "file-version", 1);
 		ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "es_ES.yml", Config::YAML), "file-version", 1);
 		ConfigUpdater::checkUpdate($this, new Config($this->getDataFolder() . "ru_RU.yml", Config::YAML), "file-version", 1);
